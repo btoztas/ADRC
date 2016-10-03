@@ -47,7 +47,7 @@ void GRAPHshow(Graph G) {
 	printf("%d vertices, %d edges\n", G -> V, G -> E);
 	for (v = 0; v < G -> V; v++) {
 		printf("%2d:", v);
-		for (t = G -> adj[v]; t != NULL; t = t -> next) 
+		for (t = G -> adj[v]; t != NULL; t = t -> next)
 			printf(" %2d", t -> v);
 		printf("\n");
 	}
@@ -57,7 +57,7 @@ void GRAPHplot(Graph G, char *filename) {
 	FILE	*ofp;
 	int		v;
 	link	t;
-	
+
 	ofp = fopen(filename, "w");
 	fprintf(ofp, "%s", "size 12 12\n");
 	randini();
@@ -66,10 +66,10 @@ void GRAPHplot(Graph G, char *filename) {
 		fprintf(ofp, "%s\n", "circle 0.12 fill black");
 		fprintf(ofp, "%s%d\n", "save v", v);
 	}
-	for (v = 0; v < G -> V; v++) 
-		for (t = G -> adj[v]; t != NULL; t = t -> next) 
+	for (v = 0; v < G -> V; v++)
+		for (t = G -> adj[v]; t != NULL; t = t -> next)
 			fprintf(ofp, "%s%d%s%d%s\n", "join v", v, ".cc - v", t -> v, ".cc");
-		
+
 	fclose(ofp);
 }
 
@@ -85,5 +85,3 @@ Graph GRAPHrandp(int V, int E) {
 					GRAPHinsertE(G, EDGE(i, j));
 	return G;
 }
-
-		
