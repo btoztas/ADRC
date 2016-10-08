@@ -3,6 +3,33 @@
 #include <string.h>
 #include "random.h"
 
+void readFile(char *symbols, char *freq){
+	FILE *fp;
+	char *line = (char *)malloc(256*sizeof(char));
+	int i;
+	int readfreq;
+	fp = fopen("symbols.txt", "r");
+	
+	for(i=0; fscanf(fp, "%s", line)!=-1; i++){
+		if(line[1]=='\0'){
+			symbols[i]=line[0];
+			fscanf(fp, "%d", &readfreq);
+			freq[i]=readfreq;
+		}else{
+			symbols[i]=line[0];
+			line++;
+			line++;
+			readfreq = atoi(line);
+		}
+	}
+	
+	fclose(fp);
+	for(i=0;i<7;i++){
+		printf("%c  %d\n", symbols[i], freq[i]);
+	}
+	return;
+}
+
 typedef struct _Node {
   struct _Node *l;
   struct _Node *r;
@@ -184,7 +211,16 @@ void heapTest(){
 
 int main(){
 
-  heapTest();
+	char symbols[255];
+	char freq[255];
+	int i;
+	
+	readFile(symbols, freq);
+	
+	for(i=0;i<7;i++){
+		printf("%c  %d\n", symbols[i], freq[i]);
+	}
+	/*heapTest();*/
 
   exit(0);
 }
