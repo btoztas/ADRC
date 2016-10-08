@@ -19,6 +19,15 @@ typedef struct _Heap {
   int size;
 } Heap;
 
+typedef struct _Entry{
+  char d;
+  char *c;
+} Entry;
+
+typedef struct _Code {
+  Entry *list;
+} Code;
+
 void errorMalloc(){
   printf("Error allocating memory\n");
   exit(-1);
@@ -152,6 +161,7 @@ Heap *HuffmanCode(char *Symbols, int *Freq){
   Heap *h = initHeap(size);
   for(i=0; i<10 ;i++)
     addToHeap(newNode(Symbols[i], Freq[i]),h);
+
   return h;
 
 }
@@ -164,15 +174,12 @@ void heapTest(){
   int Freq[10] = {30, 1, 15, 10, 10, 5, 3, 20, 5, 1};
   Heap *h = HuffmanCode(Symbols, Freq);
 
-
   for (i = 0; i < 10; i++){
     printf("Iteracao numero %d:\nEstado do Heap:\n",i+1);
     printHeap(h);
     n=removeFromHeap(h);
     printf("Node retirado:\n%c %d\n-----------------\n",n->d, n->p);
   }
-
-
 }
 
 int main(){
