@@ -3,32 +3,7 @@
 #include <string.h>
 #include "random.h"
 
-void readFile(char *symbols, char *freq){
-	FILE *fp;
-	char *line = (char *)malloc(256*sizeof(char));
-	int i;
-	int readfreq;
-	fp = fopen("symbols.txt", "r");
-	
-	for(i=0; fscanf(fp, "%s", line)!=-1; i++){
-		if(line[1]=='\0'){
-			symbols[i]=line[0];
-			fscanf(fp, "%d", &readfreq);
-			freq[i]=readfreq;
-		}else{
-			symbols[i]=line[0];
-			line++;
-			line++;
-			readfreq = atoi(line);
-		}
-	}
-	
-	fclose(fp);
-	for(i=0;i<7;i++){
-		printf("%c  %d\n", symbols[i], freq[i]);
-	}
-	return;
-}
+#define MAX 256
 
 typedef struct _Node {
   struct _Node *l;
@@ -52,12 +27,57 @@ typedef struct _Entry{
 } Entry;
 
 typedef struct _Code {
-  Entry *list;
+  Entry **list;
 } Code;
+
+/*typedef struct _Bit{
+  char b;
+  struct _Bit *next;
+}
+
+typedef struct _Word{
+  Bit *w;
+  int size;
+}*/
+
 
 void errorMalloc(){
   printf("Error allocating memory\n");
   exit(-1);
+}
+
+void readFile(char *symbols, char *freq){
+	FILE *fp;
+	char *line = (char *)malloc(256*sizeof(char));
+	int i;
+	int readfreq;
+	fp = fopen("symbols.txt", "r");
+
+	for(i=0; fscanf(fp, "%s", line)!=-1; i++){
+		if(line[1]=='\0'){
+			symbols[i]=line[0];
+			fscanf(fp, "%d", &readfreq);
+			freq[i]=readfreq;
+		}else{
+			symbols[i]=line[0];
+			line++;
+			line++;
+			readfreq = atoi(line);
+		}
+	}
+
+	fclose(fp);
+	for(i=0;i<7;i++){
+		printf("%c  %d\n", symbols[i], freq[i]);
+	}
+	return;
+}
+
+Code *initCode(){
+  Code *c = (Code *) malloc(sizeof(Code));
+  if(c==NULL)
+    errorMalloc();
+  return c;
 }
 
 Node *newNode(char d, int p){
@@ -76,6 +96,13 @@ Tree *initTree(){
     errorMalloc();
   t->root = NULL;
   return t;
+}
+
+int isLeaf(Node *n){
+  if(n->l == NULL && n->r == NULL){
+    return 1;
+  }
+  return 0;
 }
 
 Heap *initHeap(int size){
@@ -180,17 +207,56 @@ void printHeap(Heap *h){
   return;
 }
 
+void searchCodeTree(Node *root, Code *code, char *hops, int *nhop, int *n){
+
+  if (isLeaf(root)) {
+    Entry *aux = (Entry*) malloc(sizeof(Entry));
+    aux->d = root->d;
+    aux->c = (char *)malloc((*nhop)*sizeof(char));
+    for(int i=0; i<(*nhop); i++)
+      aux->c[i]=hops[i];
+    code->list[(*n)]=aux;
+    n++;
+  }else{
+    (*nhop)++;
+    hops[(*nhop)]='0';
+    searchCodeTree(root->l, code, hops, nhop, n);
+    (*nhop)++;
+    hops[(*nhop)]='0';
+    searchCodeTree(root->r, code, hops, nhop, n);
+  }
+  (*nhop)--;
+  return;
+}
+
+void GenereteCode(Node *root, Code *code){
+  char hops[MAX+1];
+  int nhop=0, n=0;
+  searchCodeTree(root->l, code, hops, &nhop, &n);
+}
+
 Heap *HuffmanCode(char *Symbols, int *Freq){
 
   int size = strlen(Symbols);
   int i;
+  Tree *t;
+  Node *n, *m, *s;
   printf("Creating a Heap of maximum size %d\n", size);
   Heap *h = initHeap(size);
   for(i=0; i<10 ;i++)
     addToHeap(newNode(Symbols[i], Freq[i]),h);
+  t = initTree();
+  while (h->size!=1) {
+    n = removeFromHeap(h);
+    m = removeFromHeap(h);
+    s = newNode('\0', n->p + m->p);
+    addToHeap(s, h);
+  }
+  t->root = removeFromHeap(h);
+
+
 
   return h;
-
 }
 
 void heapTest(){
@@ -214,9 +280,9 @@ int main(){
 	char symbols[255];
 	char freq[255];
 	int i;
-	
+
 	readFile(symbols, freq);
-	
+
 	for(i=0;i<7;i++){
 		printf("%c  %d\n", symbols[i], freq[i]);
 	}
