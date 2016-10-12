@@ -197,13 +197,12 @@ void printHeap(Heap *h){
 }
 
 void printTree(Node *root){
-	int i;
-  if (isLeaf(root)) {
-    printf("%c  ", root->d);
+  if (isLeaf(root)){
+    printf("%c\n", root->d);
   }else{
-	printf("nada  ");
-    printTree(root->l, code, hops, nhop, n);
-    printTree(root->r, code, hops, nhop, n);
+    printf("-\n");
+    printTree(root->l);
+    printTree(root->r);
   }
   return;
 }
@@ -298,7 +297,7 @@ Tree *HuffmanCode(char *Symbols, float *Freq, Code *code){
   printHeap(h);
   t = initTree();
   printf("Making Huffman tree.\n\n------------------------\n");
-  for(i=0;h->size!=1; i++) {
+  for(i=0; h->size!=1; i++) {
     printf("Loop number %d.\nHeap state:\n", i);
     printHeap(h);
     n = removeFromHeap(h);
@@ -313,7 +312,8 @@ Tree *HuffmanCode(char *Symbols, float *Freq, Code *code){
     printf("Added node of size %f to heap\n------------------\n", s->p);
   }
   t->root = removeFromHeap(h);
-  printf("\n\n\n-------------------We have a Huffman tree now.\n");
+  printf("\n\n\n-------------------\nWe have a Huffman tree now.\nPrinting the tree:\n");
+  printTree(t->root);
   printf("Generating code.\n");
   GenereteCode(t->root, code);
   printf("Finished generating code.\n");
