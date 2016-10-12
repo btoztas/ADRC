@@ -270,7 +270,10 @@ void Decode(Node *root, char *InString, char *OutString){
 	int i;
 	int j=0;
 	Node *realRoot = root;
-	for(i=0;InString[i]!='\0';i=i){
+	
+
+	printf("starting decoding \n");
+	for(i=0;InString[i]!='\0';){
 		if(isLeaf(root)){
 			OutString[j]=root->d;
 			j++;
@@ -284,7 +287,8 @@ void Decode(Node *root, char *InString, char *OutString){
 			i++;
 		}
 	}
-	OutString[j]='\0';
+	OutString[j]=root->d;
+	OutString[j+1]='\0';
 	return;
 }
 
@@ -301,7 +305,7 @@ Tree *HuffmanCode(char *Symbols, float *Freq, Code *code){
 
   int size = strlen(Symbols);
 
-  char *OutString;
+  char *OutString = (char*)malloc(MAX*sizeof(char));
   int i;
   Tree *t;
   Node *n, *m, *s;
@@ -338,13 +342,13 @@ Tree *HuffmanCode(char *Symbols, float *Freq, Code *code){
 
   printCode(code, strlen(Symbols));
 
-  /*printf("decoding......\n\n\n\n");
+  printf("decoding......\n\n\n\n");
 
   Decode(t->root, "101100001000", OutString);
 
-  printf("a palavra é %s", OutString);
+  printf("a palavra é %s\n", OutString);
 
-  printf("decoded......\n\n\n\n");*/
+  printf("decoded......\n\n\n\n");
   return t;
 }
 
