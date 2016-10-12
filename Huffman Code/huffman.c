@@ -196,6 +196,18 @@ void printHeap(Heap *h){
   return;
 }
 
+void printTree(Node *root){
+	int i;
+  if (isLeaf(root)) {
+    printf("%c  ", root->d);
+  }else{
+	printf("nada  ");
+    printTree(root->l, code, hops, nhop, n);
+    printTree(root->r, code, hops, nhop, n);
+  }
+  return;
+}
+
 void searchCodeTree(Node *root, Code *code, char *hops, int *nhop, int *n){
   int i;
   if (isLeaf(root)) {
@@ -339,6 +351,7 @@ void testHuffman(char *symbols,float *freq){
   printCode(c, strlen(symbols));
   return;
 }
+
 
 int main(){
 
