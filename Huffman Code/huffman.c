@@ -235,7 +235,7 @@ void GenereteCode(Node *root, Code *code){
   searchCodeTree(root->l, code, hops, &nhop, &n);
 }
 
-Heap *HuffmanCode(char *Symbols, int *Freq){
+Tree *HuffmanCode(char *Symbols, int *Freq, Code *code){
 
   int size = strlen(Symbols);
   int i;
@@ -253,10 +253,9 @@ Heap *HuffmanCode(char *Symbols, int *Freq){
     addToHeap(s, h);
   }
   t->root = removeFromHeap(h);
+  GenereteCode(t->root, code);
 
-
-
-  return h;
+  return t;
 }
 
 void heapTest(){
