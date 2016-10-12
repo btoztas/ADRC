@@ -273,6 +273,8 @@ void Decode(Node *root, char *InString, char *OutString){
 			i++;
 		}
 	}
+	OutString[j]='\0';
+	return;
 }
 
 void printCode(Code *code, int size){
@@ -286,6 +288,8 @@ void printCode(Code *code, int size){
 Tree *HuffmanCode(char *Symbols, float *Freq, Code *code){
 
   int size = strlen(Symbols);
+  
+  char *OutString;
   int i;
   Tree *t;
   Node *n, *m, *s;
@@ -320,6 +324,15 @@ Tree *HuffmanCode(char *Symbols, float *Freq, Code *code){
   GenereteCode(t->root, code);
   printf("Finished generating code.\n");
   printCode(code, strlen(Symbols));
+  
+  /*printf("decoding......\n\n\n\n");
+  
+  Decode(t->root, "101100001000", OutString);
+  
+  printf("a palavra é %s", OutString); 
+  
+  printf("decoded......\n\n\n\n");*/
+  
   return t;
 }
 void heapTest(char *Symbols, float *Freq){
