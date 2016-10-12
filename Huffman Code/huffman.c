@@ -66,7 +66,7 @@ Code *initCode(int size){
   Code *c = (Code *) malloc(sizeof(Code));
   if(c==NULL)
     errorMalloc();
-  c->list = (list**) malloc(sizeof(Entry)*size);
+  c->list = (Entry**) malloc(sizeof(Entry)*size);
   if(c->list==NULL)
     errorMalloc();
   return c;
@@ -325,7 +325,6 @@ int main(){
 	char freq[255];
 
 	readFile(symbols, freq);
-
   testReadFile(symbols, freq);
 
 	/*heapTest();*/
