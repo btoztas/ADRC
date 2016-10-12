@@ -298,7 +298,7 @@ Tree *HuffmanCode(char *Symbols, float *Freq, Code *code){
   t = initTree();
   printf("Making Huffman tree.\n\n------------------------\n");
   for(i=0; h->size!=1; i++) {
-    printf("Loop number %d.\nHeap state:\n", i);
+    printf("LOOP NUMBER %d.\nHeap state:\n", i);
     printHeap(h);
     n = removeFromHeap(h);
     printf("Removed node %c of size %f from heap.\n",n->d, n->p);
@@ -309,7 +309,9 @@ Tree *HuffmanCode(char *Symbols, float *Freq, Code *code){
     s->r = m;
     printf("Merged node %c of size %f with node %c of size %f.\n",n->d, n->p, m->d, m->p);
     addToHeap(s, h);
-    printf("Added node of size %f to heap\n------------------\n", s->p);
+    printf("Subtree made:\n");
+    printTree(s);
+    printf("Added node of size %f to heap\n----END OF LOOP----\n-------------------\n", s->p);
   }
   t->root = removeFromHeap(h);
   printf("\n\n\n-------------------\nWe have a Huffman tree now.\nPrinting the tree:\n");
