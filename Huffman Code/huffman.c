@@ -30,17 +30,6 @@ typedef struct _Code {
   Entry **list;
 } Code;
 
-/*typedef struct _Bit{
-  char b;
-  struct _Bit *next;
-}
-
-typedef struct _Word{
-  Bit *w;
-  int size;
-}*/
-
-
 void errorMalloc(){
   printf("Error allocating memory\n");
   exit(-1);
@@ -62,7 +51,7 @@ void readFile(char *symbols, char *freq){
 			symbols[i]=line[0];
 			line++;
 			line++;
-			readfreq = atoi(line);
+			readfreq = atof(line);
 		}
 	}
 
@@ -73,11 +62,12 @@ void readFile(char *symbols, char *freq){
 	return;
 }
 
-
-
-Code *initCode(){
+Code *initCode(int size){
   Code *c = (Code *) malloc(sizeof(Code));
   if(c==NULL)
+    errorMalloc();
+  c->list = (list**) malloc(sizeof(Entry)*size);
+  if(c->list==NULL)
     errorMalloc();
   return c;
 }
@@ -196,7 +186,6 @@ Node *removeFromHeap(Heap * h){
   return NULL;
 }
 
-
 void printHeap(Heap *h){
   int i;
   if(h->size==0){
@@ -230,7 +219,6 @@ void searchCodeTree(Node *root, Code *code, char *hops, int *nhop, int *n){
   (*nhop)--;
   return;
 }
-
 
 void GenereteCode(Node *root, Code *code){
   char hops[MAX+1];
@@ -304,8 +292,7 @@ Tree *HuffmanCode(char *Symbols, int *Freq, Code *code){
 void printCode(Code *code){
 
 }
-
-void heapTest(){
+/* void heapTest(){
 
   int i=0;
   Node *n;
@@ -319,19 +306,25 @@ void heapTest(){
     n=removeFromHeap(h);
     printf("Node retirado:\n%c %d\n-----------------\n",n->d, n->p);
   }
+}*/
+
+void testReadFile(char *symbols, char *freq){
+  int i;
+  for(i=0;i<strlen(symbols);i++){
+		printf("%c  %d\n", symbols[i], freq[i]);
+	}
+  return;
 }
 
 int main(){
 
 	char symbols[255];
 	char freq[255];
-	int i;
 
 	readFile(symbols, freq);
 
-	for(i=0;i<7;i++){
-		printf("%c  %d\n", symbols[i], freq[i]);
-	}
+  testReadFile(symbols, freq);
+
 	/*heapTest();*/
 
   exit(0);
