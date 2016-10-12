@@ -1,34 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "huffman.h"
 #include "random.h"
 
 #define MAX 256
-
-typedef struct _Node {
-  struct _Node *l;
-  struct _Node *r;
-  char d;
-  float p;
-} Node;
-
-typedef struct _Tree {
-  Node *root;
-} Tree;
-
-typedef struct _Heap {
-  Node **q;
-  int size;
-} Heap;
-
-typedef struct _Entry{
-  char d;
-  char *c;
-} Entry;
-
-typedef struct _Code {
-  Entry **list;
-} Code;
 
 void errorMalloc(){
   printf("Error allocating memory\n");
@@ -246,31 +222,10 @@ void GenereteCode(Node *root, Code *code){
   searchCodeTree(root, code, hops, &nhop, &n);
 }
 
-/*void SearchInTree(Node *root, char *InString, char *OutString, int i, int j, Node *realRoot){
-	if(inString(i)=='\0')
-
-	if(isLeaf(root)){
-		Outstring[j]=root->d;
-		j++;
-		root=realRoot;
-		SearchInTree(root, InString, OutString, i, j, realRoot);
-	}
-	if(InString[0]=='0'){
-		Decode
-	}
-}*/
-
-/*void Decode(Node *root, char *InString, char *OutString){
-	int i=0;
-	int j=0;
-	SearchInTree(root, InString, OutString, i, j, root);
-}*/
-
 void Decode(Node *root, char *InString, char *OutString){
 	int i;
 	int j=0;
 	Node *realRoot = root;
-	
 
 	printf("starting decoding \n");
 	for(i=0;InString[i]!='\0';){
@@ -301,7 +256,7 @@ void printCode(Code *code, int size){
   printf("---------------------------\n");
 }
 
-Tree *HuffmanCode(char *Symbols, float *Freq, Code *code){
+void HuffmanCode(char *Symbols, float *Freq, Code *code){
 
   int size = strlen(Symbols);
 
@@ -339,17 +294,9 @@ Tree *HuffmanCode(char *Symbols, float *Freq, Code *code){
   printf("Generating code.\n");
   GenereteCode(t->root, code);
   printf("Finished generating code.\n");
-
   printCode(code, strlen(Symbols));
 
-  printf("decoding......\n\n\n\n");
-
-  Decode(t->root, "101100001000", OutString);
-
-  printf("a palavra é %s\n", OutString);
-
-  printf("decoded......\n\n\n\n");
-  return t;
+  return;
 }
 
 void heapTest(char *Symbols, float *Freq){
@@ -382,18 +329,4 @@ void testHuffman(char *symbols,float *freq){
   HuffmanCode(symbols, freq, c);
   printCode(c, strlen(symbols));
   return;
-}
-
-
-int main(){
-
-	char symbols[255];
-	float freq[255];
-
-	readFile(symbols, freq);
-  testReadFile(symbols, freq);
-  testHuffman(symbols, freq);
-	/*heapTest(symbols, freq);*/
-
-  exit(0);
 }
