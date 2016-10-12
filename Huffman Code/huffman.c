@@ -199,6 +199,18 @@ void printHeap(Heap *h){
   return;
 }
 
+void printTree(Node *root){
+	int i;
+  if (isLeaf(root)) {
+    printf("%c  ", root->d);
+  }else{
+	printf("nada  ");
+    printTree(root->l, code, hops, nhop, n);
+    printTree(root->r, code, hops, nhop, n);
+  }
+  return;
+}
+
 void searchCodeTree(Node *root, Code *code, char *hops, int *nhop, int *n){
   int i;
   if (isLeaf(root)) {
@@ -301,7 +313,7 @@ void heapTest(char *Symbols, float *Freq){
   int i;
   Node *n;
   Heap *h = initHeap(strlen(Symbols));
-  for(i=0; i<10 ;i++)
+  for(i=0; i<strlen(Symbols) ;i++)
     addToHeap(newNode(Symbols[i], Freq[i]),h);
   printf("Finished adding to Heap\n");
   for (i = 0; i < 10; i++){
@@ -326,6 +338,7 @@ void testHuffman(char *symbols,float *freq){
   printCode(c, strlen(symbols));
   return;
 }
+
 
 int main(){
 
