@@ -238,6 +238,7 @@ void GenereteCode(Node *root, Code *code){
   searchCodeTree(root->l, code, hops, &nhop, &n);
 }
 
+<<<<<<< HEAD
 /*void SearchInTree(Node *root, char *InString, char *OutString, int i, int j, Node *realRoot){
 	if(inString(i)=='\0')
 	
@@ -298,6 +299,9 @@ void createExampleTree(Tree *tree){
 }
 
 Heap *HuffmanCode(char *Symbols, int *Freq){
+=======
+Tree *HuffmanCode(char *Symbols, int *Freq, Code *code){
+>>>>>>> 150179d6fd3193148ce7011a4a6943afc0c2d828
 
   int size = strlen(Symbols);
   int i;
@@ -315,10 +319,9 @@ Heap *HuffmanCode(char *Symbols, int *Freq){
     addToHeap(s, h);
   }
   t->root = removeFromHeap(h);
+  GenereteCode(t->root, code);
 
-
-
-  return h;
+  return t;
 }
 
 void printCode(Code *code){
