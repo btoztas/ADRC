@@ -9,7 +9,7 @@ typedef struct _Node {
   struct _Node *l;
   struct _Node *r;
   char d;
-  int p;
+  float p;
 } Node;
 
 typedef struct _Tree {
@@ -35,29 +35,30 @@ void errorMalloc(){
   exit(-1);
 }
 
-void readFile(char *symbols, char *freq){
+void readFile(char *symbols, float *freq){
 	FILE *fp;
 	char *line = (char *)malloc(256*sizeof(char));
 	int i;
-	int readfreq;
+	float readfreq;
 	fp = fopen("symbols.txt", "r");
 
 	for(i=0; fscanf(fp, "%s", line)!=-1; i++){
 		if(line[1]=='\0'){
 			symbols[i]=line[0];
-			fscanf(fp, "%d", &readfreq);
+			fscanf(fp, "%f", &readfreq);
 			freq[i]=readfreq;
 		}else{
 			symbols[i]=line[0];
 			line++;
 			line++;
 			readfreq = atof(line);
+      freq[i]=readfreq;
 		}
 	}
 
 	fclose(fp);
 	for(i=0;i<7;i++){
-		printf("%c  %d\n", symbols[i], freq[i]);
+		printf("%c  %f\n", symbols[i], freq[i]);
 	}
 	return;
 }
@@ -72,7 +73,7 @@ Code *initCode(int size){
   return c;
 }
 
-Node *newNode(char d, int p){
+Node *newNode(char d, float p){
   Node *n = (Node*) malloc(sizeof(Node));
   if(n==NULL)
     errorMalloc();
@@ -149,7 +150,7 @@ void fixHeapDown(Heap *h){
             aux = (h->q)[i];
             k = ((h->q)[i*2+1])->p < ((h->q)[i*2+2])->p ? i*2+1 : i*2+2;
 
-            printf("Vou trocar o %c-%d com o %c-%d\n",(h->q)[i]->d, (h->q)[i]->p, (h->q)[k]->d, (h->q)[k]->p);
+            printf("Vou trocar o %c-%f com o %c-%f\n",(h->q)[i]->d, (h->q)[i]->p, (h->q)[k]->d, (h->q)[k]->p);
             (h->q)[i] = (h->q)[k];
             (h->q)[k] = aux;
             i = k;
@@ -161,7 +162,7 @@ void fixHeapDown(Heap *h){
         else{
           aux = (h->q)[i];
 
-          printf("Vou trocar o %c-%d com o %c-%d\n",(h->q)[i]->d, (h->q)[i]->p, (h->q)[k]->d, (h->q)[k]->p);
+          printf("Vou trocar o %c-%f com o %c-%f\n",(h->q)[i]->d, (h->q)[i]->p, (h->q)[k]->d, (h->q)[k]->p);
           (h->q)[i] = (h->q)[k];
           (h->q)[k] = aux;
           i = k;
@@ -192,7 +193,7 @@ void printHeap(Heap *h){
     printf("Heap is empty.\n");
   }else{
     for(i=0; i<h->size; i++)
-      printf("%c %d\n", (h->q[i])->d,(h->q[i])->p);
+      printf("%c %f\n", (h->q[i])->d,(h->q[i])->p);
     printf("\n");
   }
   return;
@@ -266,7 +267,7 @@ void Decode(Node *root, char *InString, char *OutString){
 	}
 }
 
-Tree *HuffmanCode(char *Symbols, int *Freq, Code *code){
+Tree *HuffmanCode(char *Symbols, float *Freq, Code *code){
 
   int size = strlen(Symbols);
   int i;
@@ -276,6 +277,7 @@ Tree *HuffmanCode(char *Symbols, int *Freq, Code *code){
   Heap *h = initHeap(size);
   for(i=0; i<10 ;i++)
     addToHeap(newNode(Symbols[i], Freq[i]),h);
+  printf("Finished adding to Heap\n");
   t = initTree();
   while (h->size!=1) {
   n = removeFromHeap(h);
@@ -295,39 +297,45 @@ void printCode(Code *code, int size){
 		printf("simbolo: %c  codigo: %s", (code->list)[i]->d, (code->list)[i]->c);
 	}
 }
-/* void heapTest(){
-
-  int i=0;
+void heapTest(char *Symbols, float *Freq){
+  int i;
   Node *n;
-  char Symbols[10] = "abcdefghij";
-  int Freq[10] = {30, 1, 15, 10, 10, 5, 3, 20, 5, 1};
-  Heap *h = HuffmanCode(Symbols, Freq);
-
+  Heap *h = initHeap(strlen(Symbols));
+  for(i=0; i<10 ;i++)
+    addToHeap(newNode(Symbols[i], Freq[i]),h);
+  printf("Finished adding to Heap\n");
   for (i = 0; i < 10; i++){
     printf("Iteracao numero %d:\nEstado do Heap:\n",i+1);
     printHeap(h);
     n=removeFromHeap(h);
-    printf("Node retirado:\n%c %d\n-----------------\n",n->d, n->p);
+    printf("Node retirado:\n%c %f\n-----------------\n",n->d, n->p);
   }
-}*/
+}
 
-void testReadFile(char *symbols, char *freq){
+void testReadFile(char *symbols, float *freq){
   int i;
   for(i=0;i<strlen(symbols);i++){
-		printf("%c  %d\n", symbols[i], freq[i]);
+		printf("%c  %f\n", symbols[i], freq[i]);
 	}
+  return;
+}
+
+void testHuffman(char *symbols,float *freq){
+  Code *c = initCode(strlen(symbols));
+  HuffmanCode(symbols, freq, c);
+  printCode(c, strlen(symbols));
   return;
 }
 
 int main(){
 
 	char symbols[255];
-	char freq[255];
+	float freq[255];
 
 	readFile(symbols, freq);
   testReadFile(symbols, freq);
-
-	/*heapTest();*/
+  /*testHuffman(symbols, freq);*/
+	heapTest(symbols, freq);
 
   exit(0);
 }
