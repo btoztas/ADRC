@@ -4,7 +4,7 @@
 #include "random.h"
 
 #define MAX 256
-
+ 
 typedef struct _Node {
   struct _Node *l;
   struct _Node *r;
@@ -72,6 +72,8 @@ void readFile(char *symbols, char *freq){
 	}
 	return;
 }
+
+
 
 Code *initCode(){
   Code *c = (Code *) malloc(sizeof(Code));
@@ -208,31 +210,91 @@ void printHeap(Heap *h){
 }
 
 void searchCodeTree(Node *root, Code *code, char *hops, int *nhop, int *n){
-
+  int i;
   if (isLeaf(root)) {
     Entry *aux = (Entry*) malloc(sizeof(Entry));
     aux->d = root->d;
     aux->c = (char *)malloc((*nhop)*sizeof(char));
-    for(int i=0; i<(*nhop); i++)
+    for(i=0; i<(*nhop); i++)
       aux->c[i]=hops[i];
     code->list[(*n)]=aux;
     n++;
   }else{
     (*nhop)++;
-    hops[(*nhop)]='0';
+    hops[(*nhop)-1]='0';
     searchCodeTree(root->l, code, hops, nhop, n);
     (*nhop)++;
-    hops[(*nhop)]='0';
+    hops[(*nhop)-1]='1';
     searchCodeTree(root->r, code, hops, nhop, n);
   }
   (*nhop)--;
   return;
 }
 
+
 void GenereteCode(Node *root, Code *code){
   char hops[MAX+1];
   int nhop=0, n=0;
   searchCodeTree(root->l, code, hops, &nhop, &n);
+}
+
+/*void SearchInTree(Node *root, char *InString, char *OutString, int i, int j, Node *realRoot){
+	if(inString(i)=='\0')
+	
+	if(isLeaf(root)){
+		Outstring[j]=root->d;
+		j++;
+		root=realRoot;
+		SearchInTree(root, InString, OutString, i, j, realRoot);
+	}
+	if(InString[0]=='0'){
+		Decode
+	}
+}*/
+
+/*void Decode(Node *root, char *InString, char *OutString){
+	int i=0;
+	int j=0;
+	SearchInTree(root, InString, OutString, i, j, root);
+}*/
+
+void Decode(Node *root, char *InString, char *OutString){
+	int i;
+	int j=0;
+	Node *realRoot = root;
+	for(i=0;InString[i]!='\0';i=i){
+		if(isLeaf(root)){
+			OutString[j]=root->d;
+			j++;
+			root=realRoot;
+		}else{
+			if(InString[i]=='0'){
+				root = root->l;
+			}else{
+				root = root->r;
+			}
+			i++;
+		}
+	}
+}
+
+void createExampleTree(Tree *tree){
+  Node *new;
+  
+  new=newNode(0);
+  tree->root=new;
+  new->l=newNode(0);
+  (new->l)->l=newNode(1);
+  (new->l)->r=newNode(0);
+  ((new->l)->r)->l=newNode(2);
+  ((new->l)->r)->r=newNode(3);
+  
+  new->r=newNode(0);
+  (new->r)->l=newNode(4);
+  (new->r)->r=newNode(0);
+  ((new->r)->r)->l=newNode(5);
+  ((new->r)->r)->r=newNode(6);
+  tree->size=11;
 }
 
 Heap *HuffmanCode(char *Symbols, int *Freq){
@@ -247,7 +309,7 @@ Heap *HuffmanCode(char *Symbols, int *Freq){
     addToHeap(newNode(Symbols[i], Freq[i]),h);
   t = initTree();
   while (h->size!=1) {
-    n = removeFromHeap(h);
+  n = removeFromHeap(h);
     m = removeFromHeap(h);
     s = newNode('\0', n->p + m->p);
     addToHeap(s, h);
@@ -257,6 +319,10 @@ Heap *HuffmanCode(char *Symbols, int *Freq){
 
 
   return h;
+}
+
+void printCode(Code *code){
+	
 }
 
 void heapTest(){
