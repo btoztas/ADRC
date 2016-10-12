@@ -4,7 +4,7 @@
 #include "random.h"
 
 #define MAX 256
- 
+
 typedef struct _Node {
   struct _Node *l;
   struct _Node *r;
@@ -238,10 +238,9 @@ void GenereteCode(Node *root, Code *code){
   searchCodeTree(root->l, code, hops, &nhop, &n);
 }
 
-<<<<<<< HEAD
 /*void SearchInTree(Node *root, char *InString, char *OutString, int i, int j, Node *realRoot){
 	if(inString(i)=='\0')
-	
+
 	if(isLeaf(root)){
 		Outstring[j]=root->d;
 		j++;
@@ -279,29 +278,7 @@ void Decode(Node *root, char *InString, char *OutString){
 	}
 }
 
-void createExampleTree(Tree *tree){
-  Node *new;
-  
-  new=newNode(0);
-  tree->root=new;
-  new->l=newNode(0);
-  (new->l)->l=newNode(1);
-  (new->l)->r=newNode(0);
-  ((new->l)->r)->l=newNode(2);
-  ((new->l)->r)->r=newNode(3);
-  
-  new->r=newNode(0);
-  (new->r)->l=newNode(4);
-  (new->r)->r=newNode(0);
-  ((new->r)->r)->l=newNode(5);
-  ((new->r)->r)->r=newNode(6);
-  tree->size=11;
-}
-
-Heap *HuffmanCode(char *Symbols, int *Freq){
-=======
 Tree *HuffmanCode(char *Symbols, int *Freq, Code *code){
->>>>>>> 150179d6fd3193148ce7011a4a6943afc0c2d828
 
   int size = strlen(Symbols);
   int i;
@@ -325,7 +302,7 @@ Tree *HuffmanCode(char *Symbols, int *Freq, Code *code){
 }
 
 void printCode(Code *code){
-	
+
 }
 
 void heapTest(){
