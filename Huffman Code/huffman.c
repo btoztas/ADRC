@@ -289,8 +289,11 @@ Tree *HuffmanCode(char *Symbols, int *Freq, Code *code){
   return t;
 }
 
-void printCode(Code *code){
-
+void printCode(Code *code, int size){
+	int i;
+	for(i=0;i<size;i++){
+		printf("simbolo: %c  codigo: %s", (code->list)[i]->d, (code->list)[i]->c);
+	}
 }
 /* void heapTest(){
 
