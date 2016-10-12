@@ -197,6 +197,7 @@ void printHeap(Heap *h){
 }
 
 void printTree(Node *root){
+
   if (isLeaf(root)){
     printf("%c\n", root->d);
   }else{
@@ -209,22 +210,32 @@ void printTree(Node *root){
 
 void searchCodeTree(Node *root, Code *code, char *hops, int *nhop, int *n){
   int i;
+  printf("%d\n", (*nhop));
+
   if (isLeaf(root)) {
+    printf("---Found a leaf!---\n");
     Entry *aux = (Entry*) malloc(sizeof(Entry));
     aux->d = root->d;
-    aux->c = (char *)malloc((*nhop)*sizeof(char));
+    aux->c = (char*)malloc((*nhop)*sizeof(char));
     for(i=0; i<(*nhop); i++)
       aux->c[i]=hops[i];
     code->list[(*n)]=aux;
-    n++;
-  }else{
+    printf("Added leaf %c with code %s to the list on position %d.\n\n", code->list[(*n)]->d, code->list[(*n)]->c, *n);
+    (*n)++;
+  }
+
+  else{
     (*nhop)++;
     hops[(*nhop)-1]='0';
+    printf("Searching left node\n");
     searchCodeTree(root->l, code, hops, nhop, n);
+
     (*nhop)++;
     hops[(*nhop)-1]='1';
+    printf("Searching right node\n");
     searchCodeTree(root->r, code, hops, nhop, n);
   }
+  printf("Returning\n");
   (*nhop)--;
   return;
 }
@@ -232,7 +243,7 @@ void searchCodeTree(Node *root, Code *code, char *hops, int *nhop, int *n){
 void GenereteCode(Node *root, Code *code){
   char hops[MAX+1];
   int nhop=0, n=0;
-  searchCodeTree(root->l, code, hops, &nhop, &n);
+  searchCodeTree(root, code, hops, &nhop, &n);
 }
 
 /*void SearchInTree(Node *root, char *InString, char *OutString, int i, int j, Node *realRoot){
@@ -277,10 +288,11 @@ void Decode(Node *root, char *InString, char *OutString){
 
 void printCode(Code *code, int size){
 	int i;
-  printf("CODE:\n");
+  printf("---------------------------\nCurrently, your code is:\n");
 	for(i=0;i<size;i++){
 		printf("Symbol: %c  Code: %s\n", (code->list)[i]->d, (code->list)[i]->c);
 	}
+  printf("---------------------------\n");
 }
 
 Tree *HuffmanCode(char *Symbols, float *Freq, Code *code){
@@ -319,9 +331,9 @@ Tree *HuffmanCode(char *Symbols, float *Freq, Code *code){
   printf("Generating code.\n");
   GenereteCode(t->root, code);
   printf("Finished generating code.\n");
-  printCode(code, strlen(Symbols));
   return t;
 }
+
 void heapTest(char *Symbols, float *Freq){
   int i;
   Node *n;
