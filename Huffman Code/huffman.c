@@ -57,9 +57,6 @@ void readFile(char *symbols, float *freq){
 	}
 
 	fclose(fp);
-	for(i=0;i<7;i++){
-		printf("%c  %f\n", symbols[i], freq[i]);
-	}
 	return;
 }
 
@@ -267,6 +264,14 @@ void Decode(Node *root, char *InString, char *OutString){
 	}
 }
 
+void printCode(Code *code, int size){
+	int i;
+  printf("CODE:\n");
+	for(i=0;i<size;i++){
+		printf("Symbol: %c  Code: %s\n", (code->list)[i]->d, (code->list)[i]->c);
+	}
+}
+
 Tree *HuffmanCode(char *Symbols, float *Freq, Code *code){
 
   int size = strlen(Symbols);
@@ -275,36 +280,42 @@ Tree *HuffmanCode(char *Symbols, float *Freq, Code *code){
   Node *n, *m, *s;
   printf("Creating a Heap of maximum size %d\n", size);
   Heap *h = initHeap(size);
-  for(i=0; i<10 ;i++)
+  for(i=0; i<strlen(Symbols); i++)
     addToHeap(newNode(Symbols[i], Freq[i]),h);
-  printf("Finished adding to Heap\n");
+  printf("Finished adding to Heap\nHeap state:\n");
+  printHeap(h);
   t = initTree();
-  while (h->size!=1) {
-  n = removeFromHeap(h);
+  printf("Making Huffman tree.\n\n------------------------\n");
+  for(i=0;h->size!=1; i++) {
+    printf("Loop number %d.\nHeap state:\n", i);
+    printHeap(h);
+    n = removeFromHeap(h);
+    printf("Removed node %c of size %f from heap.\n",n->d, n->p);
     m = removeFromHeap(h);
+    printf("Removed node %c of size %f from heap.\n",m->d, m->p);
     s = newNode('\0', n->p + m->p);
+    s->l = n;
+    s->r = m;
+    printf("Merged node %c of size %f with node %c of size %f.\n",n->d, n->p, m->d, m->p);
     addToHeap(s, h);
+    printf("Added node of size %f to heap\n------------------\n", s->p);
   }
   t->root = removeFromHeap(h);
+  printf("\n\n\n-------------------We have a Huffman tree now.\n");
+  printf("Generating code.\n");
   GenereteCode(t->root, code);
-
+  printf("Finished generating code.\n");
+  printCode(code, strlen(Symbols));
   return t;
-}
-
-void printCode(Code *code, int size){
-	int i;
-	for(i=0;i<size;i++){
-		printf("simbolo: %c  codigo: %s", (code->list)[i]->d, (code->list)[i]->c);
-	}
 }
 void heapTest(char *Symbols, float *Freq){
   int i;
   Node *n;
   Heap *h = initHeap(strlen(Symbols));
-  for(i=0; i<10 ;i++)
+  for(i=0; i<strlen(Symbols); i++)
     addToHeap(newNode(Symbols[i], Freq[i]),h);
   printf("Finished adding to Heap\n");
-  for (i = 0; i < 10; i++){
+  for (i = 0; i<strlen(Symbols); i++){
     printf("Iteracao numero %d:\nEstado do Heap:\n",i+1);
     printHeap(h);
     n=removeFromHeap(h);
@@ -314,9 +325,11 @@ void heapTest(char *Symbols, float *Freq){
 
 void testReadFile(char *symbols, float *freq){
   int i;
+  printf("Testing the symbols read:\n");
   for(i=0;i<strlen(symbols);i++){
 		printf("%c  %f\n", symbols[i], freq[i]);
 	}
+  printf("-----------------------------\n\n\n");
   return;
 }
 
@@ -334,8 +347,8 @@ int main(){
 
 	readFile(symbols, freq);
   testReadFile(symbols, freq);
-  /*testHuffman(symbols, freq);*/
-	heapTest(symbols, freq);
+  testHuffman(symbols, freq);
+	/*heapTest(symbols, freq);*/
 
   exit(0);
 }
