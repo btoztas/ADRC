@@ -11,9 +11,13 @@ int main(){
 
   char Symbols[MAX];
   float Freq[MAX];
+  char file[20];
   Code *Code;
 
-  readFile(Symbols, Freq);
+  printf("Introduza o nome do ficheiro:\n");
+  fgets(file, 20, stdin);
+  file[strlen(file)-1] = '\0';
+  readFile(Symbols, Freq, file);
   Code = initCode(strlen(Symbols));
   HuffmanCode(Symbols, Freq, Code);
   printCode(Code, strlen(Symbols));
