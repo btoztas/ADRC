@@ -13,13 +13,14 @@ int main(){
   char Symbols[MAX] = {"absckdkdkdk"};
   Code *Code;
   Tree *t;
-  //readFile
+  readFileS(Symbols);
 
-  t = makeTree(Symbols, strlen(Symbols));
+
+  /*t = makeTree(Symbols, strlen(Symbols));
   printTree(t->root);
   Code = initCode(strlen(Symbols));
   GenereteCode(t->root, Code);
-  printCode(Code, strlen(Symbols));
+  printCode(Code, strlen(Symbols));*/
 
   exit(0);
 }

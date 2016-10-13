@@ -36,27 +36,32 @@ void readFile(char *symbols, float *freq){
 	return;
 }
 
-void readFileS(char *symbols, float *freq){
+void readFileS(char *symbols){
 	FILE *fp;
 	char *line = (char *)malloc(256*sizeof(char));
 	int i;
-	float readfreq;
+	char c;
 	fp = fopen("symbols2.txt", "r");
-
+	
 	for(i=0; fscanf(fp, "%s", line)!=-1; i++){
 		if(line[1]=='\0'){
 			symbols[i]=line[0];
-			fscanf(fp, "%c", symbols[i+1]);
+			fscanf(fp, "%c", &c);
 			i++;
+			symbols[i]=c;
 		}else{
 			symbols[i]=line[0];
 			line++;
 			line++;
 			i++;
-			symbols[i]=atoc(line);
+			symbols[i]=line[0];
 		}
 	}
-
+	
+	for(i = 0; i<strlen(symbols); i++){
+		printf("%c ", symbols[i]);
+	}
+	printf("\n");
 	fclose(fp);
 	return;
 }
