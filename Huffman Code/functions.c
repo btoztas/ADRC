@@ -259,7 +259,6 @@ void printCode(Code *Code, int size){
 void HuffmanCode(char *Symbols, float *Freq, Code *code){
 
   int size = strlen(Symbols);
-
   int i;
   Tree *t;
   Node *n, *m, *s;
