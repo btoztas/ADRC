@@ -184,6 +184,15 @@ void printTree(Node *root){
   return;
 }
 
+
+void makeTree(Tree *t, FILE *f){
+
+
+
+
+}
+
+
 void searchCodeTree(Node *root, Code *code, char *hops, int *nhop, int *n){
   int i;
   printf("%d\n", (*nhop));
