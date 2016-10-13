@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include "functions.h"
 #include "random.h"
 
@@ -47,7 +46,7 @@ Code *initCode(int size){
   return c;
 }
 
-Node *newNode(char *d, float p){
+Node *newNode(char d, float p){
   Node *n = (Node*) malloc(sizeof(Node));
   if(n==NULL)
     errorMalloc();
@@ -107,6 +106,7 @@ void addToHeap(Node *n, Heap *h){
 }
 
 void fixHeapDown(Heap *h){
+
   printf("Starting fixHeapDown\n");
   int i=0, k=0;
   int found=0;
@@ -184,8 +184,6 @@ void printTree(Node *root){
   return;
 }
 
-<<<<<<< HEAD
-
 void makeTree(Tree *t, char *Symbols, int size){
 
   int i, j;
@@ -220,8 +218,6 @@ void makeTree(Tree *t, char *Symbols, int size){
 }
 
 
-=======
->>>>>>> parent of 9a45476... Started implementin makeTree
 void searchCodeTree(Node *root, Code *code, char *hops, int *nhop, int *n){
   int i;
   printf("%d\n", (*nhop));

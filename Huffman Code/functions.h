@@ -4,7 +4,7 @@
 typedef struct _Node {
   struct _Node *l;
   struct _Node *r;
-  char *d;
+  char d;
   float p;
 } Node;
 
