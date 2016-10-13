@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "functions.h"
 #include "random.h"
 
@@ -46,7 +47,7 @@ Code *initCode(int size){
   return c;
 }
 
-Node *newNode(char d, float p){
+Node *newNode(char *d, float p){
   Node *n = (Node*) malloc(sizeof(Node));
   if(n==NULL)
     errorMalloc();
@@ -106,7 +107,6 @@ void addToHeap(Node *n, Heap *h){
 }
 
 void fixHeapDown(Heap *h){
-
   printf("Starting fixHeapDown\n");
   int i=0, k=0;
   int found=0;
@@ -185,11 +185,37 @@ void printTree(Node *root){
 }
 
 
-void makeTree(Tree *t, FILE *f){
+void makeTree(Tree *t, char *Symbols, int size){
 
+  int i, j;
+  Node *new, *q, *p;
+  srand(time(NULL));
 
-
-
+  for (i=0; i < size; i++) {
+      new = newNode(Symbols[i],0);
+      if(t->root==NULL){
+        t->root = new;
+      }else{
+        q=t->root;
+        while(!isLeaf(q)){
+          j=(rand()%2);
+          p=q;
+          if(!j)
+            q=q->l;
+          else
+            q=q->r;
+        }
+        if(!j){
+          p->l=newNode("\0", 0);
+          (p->l)->l=q;
+          (p->l)->r=q;
+        }else{
+          p->r=newNode("\0", 0);
+          (p->r)->l=q;
+          (p->r)->r=q;
+        }
+      }
+  }
 }
 
 
