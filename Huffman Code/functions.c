@@ -12,12 +12,12 @@ void errorMalloc(){
   exit(-1);
 }
 
-void readFile(char *symbols, float *freq){
+void readFile(char *symbols, float *freq, char *file){
 	FILE *fp;
 	char *line = (char *)malloc(256*sizeof(char));
 	int i;
 	float readfreq;
-	fp = fopen("symbols.txt", "r");
+	fp = fopen(file, "r");
 	for(i=0; fscanf(fp, "%s", line)!=-1; i++){
 		if(line[1]=='\0'){
 			symbols[i]=line[0];
@@ -31,7 +31,6 @@ void readFile(char *symbols, float *freq){
       freq[i]=readfreq;
 		}
 	}
-
 	fclose(fp);
 	return;
 }
@@ -55,7 +54,7 @@ void readFileS(char *symbols){
 			symbols[i]=line[0];
 		}
 	}
-  
+	symbols[i-1]='\0';
 	fclose(fp);
 	return;
 }

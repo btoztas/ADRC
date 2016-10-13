@@ -36,7 +36,7 @@ void Decode(Node *root, char *InString, char *OutString);
 
 void printCode(Code *Code, int size);
 
-void readFile(char *symbols, float *freq);
+void readFile(char *symbols, float *freq, char *file);
 
 void readFileS(char *symbols);
 
