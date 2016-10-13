@@ -1,3 +1,3 @@
 all:
 
-	gcc -g -Wall huffman.c -o huffman
+	gcc -g -Wall huffman.c functions.c -o huffman

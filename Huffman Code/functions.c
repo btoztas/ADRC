@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "huffman.h"
+#include "functions.h"
 #include "random.h"
 
 #define MAX 256
@@ -247,11 +247,11 @@ void Decode(Node *root, char *InString, char *OutString){
 	return;
 }
 
-void printCode(Code *code, int size){
+void printCode(Code *Code, int size){
 	int i;
   printf("---------------------------\nCurrently, your code is:\n");
 	for(i=0;i<size;i++){
-		printf("Symbol: %c  Code: %s\n", (code->list)[i]->d, (code->list)[i]->c);
+		printf("Symbol: %c  Code: %s\n", (Code->list)[i]->d, (Code->list)[i]->c);
 	}
   printf("---------------------------\n");
 }
@@ -260,7 +260,6 @@ void HuffmanCode(char *Symbols, float *Freq, Code *code){
 
   int size = strlen(Symbols);
 
-  char *OutString = (char*)malloc(MAX*sizeof(char));
   int i;
   Tree *t;
   Node *n, *m, *s;
@@ -294,7 +293,6 @@ void HuffmanCode(char *Symbols, float *Freq, Code *code){
   printf("Generating code.\n");
   GenereteCode(t->root, code);
   printf("Finished generating code.\n");
-  printCode(code, strlen(Symbols));
 
   return;
 }
