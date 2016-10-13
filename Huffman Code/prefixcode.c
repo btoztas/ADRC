@@ -13,10 +13,11 @@ int main(){
   char Symbols[MAX] = {"qwertyuiop"};
   Code *Code;
   Tree *t;
-  //readFile
+
+  readFileS(Symbols);
   printf("%s\n",Symbols);
+  
   t = makeTree(Symbols, strlen(Symbols));
-  printTree(t->root);
   Code = initCode(strlen(Symbols));
   GenereteCode(t->root, Code);
   printCode(Code, strlen(Symbols));
