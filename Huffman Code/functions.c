@@ -331,6 +331,9 @@ void printCode(Code *Code, int size){
 void HuffmanCode(char *Symbols, float *Freq, Code *code){
 
   int size = strlen(Symbols);
+  char file[20];
+  char OutString[256];
+  FILE *fp = NULL;
   int i;
   Tree *t;
   Node *n, *m, *s;
@@ -364,6 +367,31 @@ void HuffmanCode(char *Symbols, float *Freq, Code *code){
   printf("Generating code.\n");
   GenereteCode(t->root, code);
   printf("Finished generating code.\n");
+  
+  for(i=0;strcmp(file,"y")!=0&&strcmp(file,"n")!=0;i++){
+    printf("Predente descoodificar algum código? [y/n]\n");
+    fgets(file, 20, stdin);
+	file[strlen(file)-1] = '\0';
+  }
+  
+  if(strcmp(file,"n")==0) return;
+
+  printf("Introduza o nome do ficheiro que contém o código:\n");
+  
+  for(i=0;fp==NULL;i++){
+	if(i>0)printf("Indroduza um nome de ficheiro que exista:\n");
+	fgets(file, 20, stdin);
+	file[strlen(file)-1] = '\0';
+	fp = fopen(file, "r");
+  }
+
+  fscanf(fp, "%s", file);
+  
+  Decode(t->root, file, OutString);
+
+  printf("Decoded : %s\n", OutString);
+
+  fclose(fp);
 
   return;
 }
