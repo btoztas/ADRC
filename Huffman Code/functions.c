@@ -55,7 +55,7 @@ void readFileS(char *symbols){
 			symbols[i]=line[0];
 		}
 	}
-  
+	symbols[i-1]='\0';
 	fclose(fp);
 	return;
 }
