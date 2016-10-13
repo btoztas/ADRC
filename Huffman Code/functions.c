@@ -184,6 +184,7 @@ void printTree(Node *root){
   return;
 }
 
+<<<<<<< HEAD
 
 void makeTree(Tree *t, char *Symbols, int size){
 
@@ -219,6 +220,8 @@ void makeTree(Tree *t, char *Symbols, int size){
 }
 
 
+=======
+>>>>>>> parent of 9a45476... Started implementin makeTree
 void searchCodeTree(Node *root, Code *code, char *hops, int *nhop, int *n){
   int i;
   printf("%d\n", (*nhop));
