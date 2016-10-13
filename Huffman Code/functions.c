@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "functions.h"
 #include "random.h"
 
@@ -17,7 +18,6 @@ void readFile(char *symbols, float *freq){
 	int i;
 	float readfreq;
 	fp = fopen("symbols.txt", "r");
-
 	for(i=0; fscanf(fp, "%s", line)!=-1; i++){
 		if(line[1]=='\0'){
 			symbols[i]=line[0];
@@ -184,10 +184,12 @@ void printTree(Node *root){
   return;
 }
 
-void makeTree(Tree *t, char *Symbols, int size){
+Tree *makeTree(char *Symbols, int size){
 
   int i, j;
   Node *new, *q, *p;
+  Tree *t = initTree();
+
   srand(time(NULL));
 
   for (i=0; i < size; i++) {
@@ -205,16 +207,17 @@ void makeTree(Tree *t, char *Symbols, int size){
             q=q->r;
         }
         if(!j){
-          p->l=newNode("\0", 0);
+          p->l=newNode('\0', 0);
           (p->l)->l=q;
           (p->l)->r=q;
         }else{
-          p->r=newNode("\0", 0);
+          p->r=newNode('\0', 0);
           (p->r)->l=q;
           (p->r)->r=q;
         }
       }
   }
+  return t;
 }
 
 
