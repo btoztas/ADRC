@@ -35,7 +35,7 @@ void readFile(char *symbols, float *freq){
 	fclose(fp);
 	return;
 }
-
+/*
 void readFileS(char *symbols, float *freq){
 	FILE *fp;
 	char *line = (char *)malloc(256*sizeof(char));
@@ -60,7 +60,7 @@ void readFileS(char *symbols, float *freq){
 	fclose(fp);
 	return;
 }
-
+*/
 Code *initCode(int size){
   Code *c = (Code *) malloc(sizeof(Code));
   if(c==NULL)
@@ -214,31 +214,43 @@ Tree *makeTree(char *Symbols, int size){
   int i, j;
   Node *new, *q, *p;
   Tree *t = initTree();
-
   srand(time(NULL));
 
   for (i=0; i < size; i++) {
+      printf("Adding node number %d to the tree. This node has value %c\n",i , Symbols[i]);
       new = newNode(Symbols[i],0);
       if(t->root==NULL){
         t->root = new;
+        printf("Added as the root of the tree.\n");
       }else{
-        q=t->root;
+        p=q=t->root;
         while(!isLeaf(q)){
           j=(rand()%2);
           p=q;
-          if(!j)
+          if(!j){
+            printf("Going to the left child.\n");
             q=q->l;
-          else
+          }else{
+            printf("Going to the right child.\n");
             q=q->r;
+          }
         }
-        if(!j){
-          p->l=newNode('\0', 0);
-          (p->l)->l=q;
-          (p->l)->r=q;
+        printf("Found the leaf.\n");
+        if(i==1){
+          p=newNode('\0', 0);
+          p->l = q;
+          p->r = new;
+          t->root=p;
         }else{
-          p->r=newNode('\0', 0);
-          (p->r)->l=q;
-          (p->r)->r=q;
+          if(!j){
+            p->l=newNode('\0', 0);
+            (p->l)->l=q;
+            (p->l)->r=new;
+          }else{
+            p->r=newNode('\0', 0);
+            (p->r)->l=q;
+            (p->r)->r=new;
+          }
         }
       }
   }

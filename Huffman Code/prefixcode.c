@@ -10,11 +10,11 @@
 
 int main(){
 
-  char Symbols[MAX] = {"absckdkdkdk"};
+  char Symbols[MAX] = {"qwertyuiop"};
   Code *Code;
   Tree *t;
   //readFile
-
+  printf("%s\n",Symbols);
   t = makeTree(Symbols, strlen(Symbols));
   printTree(t->root);
   Code = initCode(strlen(Symbols));

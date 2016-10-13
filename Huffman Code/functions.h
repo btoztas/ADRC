@@ -38,6 +38,8 @@ void printCode(Code *Code, int size);
 
 void readFile(char *symbols, float *freq);
 
+//void readFileS(char *symbols, float *freq);
+
 Tree *makeTree(char *Symbols, int size);
 
 void printTree(Node *root);
