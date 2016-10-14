@@ -32,7 +32,7 @@ void readFile(char *symbols, float *freq, char *file){
 		}
 	}
 	fclose(fp);
-	return;
+	return;  
 }
 
 void readFileS(char *symbols, char *file){
