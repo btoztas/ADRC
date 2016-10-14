@@ -322,11 +322,11 @@ void Decode(Node *root, char *InString, char *OutString){
 			i++;
 		}
 	}
-	
+
 	if(isLeaf(root)){
 		OutString[j]=root->d;
 		OutString[j+1]='\0';
-		
+
 		printf("Decoded : %s\n", OutString);
 	}
 	else{
@@ -385,7 +385,7 @@ void HuffmanCode(char *Symbols, float *Freq, Code *code){
   printf("Generating code.\n");
   GenereteCode(t->root, code);
   printf("Finished generating code.\n");
-  
+
   for(j=0;j<100;j++){
 	  for(i=0;strcmp(file,"y")!=0&&strcmp(file,"n")!=0;i++){
 		if(j==0)printf("Predente descoodificar algum código? [y/n]\n");
@@ -393,14 +393,14 @@ void HuffmanCode(char *Symbols, float *Freq, Code *code){
 		fgets(file, 20, stdin);
 		file[strlen(file)-1] = '\0';
 	  }
-	  
+
 	  if(strcmp(file,"n")==0){
 			printf("goodbye\n");
 			return;
 	  }
 
 	  printf("Introduza o nome do ficheiro que contém o código:\n");
-	  
+
 	  for(i=0;fp==NULL;i++){
 		if(i>0)printf("Indroduza um nome de ficheiro que exista:\n");
 		fgets(file, 20, stdin);
@@ -409,7 +409,7 @@ void HuffmanCode(char *Symbols, float *Freq, Code *code){
 	  }
 
 	  fscanf(fp, "%s", file);
-	  
+
 	  Decode(t->root, file, OutString);
 
 	  printf("Decoded : %s\n", OutString);
