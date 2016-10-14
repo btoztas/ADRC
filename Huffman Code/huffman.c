@@ -16,10 +16,10 @@ int main(){
   FILE *fp = NULL;
   Code *Code;
   
-  printf("Introduza o nome do ficheiro:\n");
+  printf("File name:\n");
   
   for(i=0;fp==NULL;i++){
-	if(i>0)printf("Indroduza um nome de ficheiro que exista:\n");
+	if(i>0)printf("No file named after %s. New file name:\n", file);
 	fgets(file, 20, stdin);
 	file[strlen(file)-1] = '\0';
 	fp = fopen(file, "r");

@@ -32,7 +32,7 @@ void readFile(char *symbols, float *freq, char *file){
 		}
 	}
 	fclose(fp);
-	return;
+	return;  
 }
 			symbols[i]=line[0];
 
@@ -265,8 +265,8 @@ void Decode(Node *root, char *InString, char *OutString){
 	}
 	else{
 		OutString[j]='\0';
-		printf("Decoded : %s\n", OutString);
-		printf("warning : bitstring provided have been corrupted\n");
+		printf("Decoded: %s\n", OutString);
+		printf("warning: bitstring provided have been corrupted\n");
 	}
 	return;
 }
@@ -322,8 +322,8 @@ void HuffmanCode(char *Symbols, float *Freq, Code *code){
 
   for(j=0;j<100;j++){
 	  for(i=0;strcmp(file,"y")!=0&&strcmp(file,"n")!=0;i++){
-		if(j==0)printf("Predente descoodificar algum código? [y/n]\n");
-		else printf("Predente descoodificar mais algum código? [y/n]\n");
+		if(j==0)printf("Do you want do decode a bitstring? [y/n]\n");
+		else printf("Do you want do decode any other bitstring? [y/n]\n");
 		fgets(file, 20, stdin);
 		file[strlen(file)-1] = '\0';
 	  }
@@ -333,10 +333,10 @@ void HuffmanCode(char *Symbols, float *Freq, Code *code){
 			return;
 	  }
 
-	  printf("Introduza o nome do ficheiro que contém o código:\n");
+	  printf("File name which contains the code:\n");
 
 	  for(i=0;fp==NULL;i++){
-		if(i>0)printf("Indroduza um nome de ficheiro que exista:\n");
+		if(i>0)printf("No file named after %s. New file name:\n", file);
 		fgets(file, 20, stdin);
 		file[strlen(file)-1] = '\0';
 		fp = fopen(file, "r");
@@ -346,9 +346,9 @@ void HuffmanCode(char *Symbols, float *Freq, Code *code){
 
 	  Decode(t->root, file, OutString);
 
-	  printf("Decoded : %s\n", OutString);
-
 	  fclose(fp);
+	  
+	  fp = NULL;
 
   }
 
