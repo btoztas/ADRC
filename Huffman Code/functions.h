@@ -32,13 +32,15 @@ void HuffmanCode(char *Symbols, float *Freq, Code *code);
 
 void GenereteCode(Node *root, Code *code);
 
+int checkIfBitString(char *readString);
+
 void Decode(Node *root, char *InString, char *OutString);
 
 void printCode(Code *Code, int size);
 
 void readFile(char *symbols, float *freq, char *file);
 
-void readFileS(char *symbols);
+void readFileS(char *symbols, char *file);
 
 Tree *makeTree(char *Symbols, int size);
 

@@ -35,11 +35,11 @@ void readFile(char *symbols, float *freq, char *file){
 	return;
 }
 
-void readFileS(char *symbols){
+void readFileS(char *symbols, char *file){
 	FILE *fp;
 	char *line = (char *)malloc(256*sizeof(char));
 	int i;
-	fp = fopen("symbols2.txt", "r");
+	fp = fopen(file, "r");
 
 	for(i=0; fscanf(fp, "%s", line)!=-1; i++){
 		if(line[1]=='\0'){
@@ -296,8 +296,8 @@ void GenereteCode(Node *root, Code *code){
 
 int checkIfBitString(char *readString){
 	int i;
-	for(i=0;readString[i]!='\0'; i++){
-		if(readString[i] != '0' || readString[i] != '1') return 0;
+	for(i=0;readString[i+1]!='\0'; i++){
+		if(readString[i] != '0' && readString[i] != '1') return 0;
 	}
 	return 1;
 }
@@ -306,7 +306,6 @@ void Decode(Node *root, char *InString, char *OutString){
 	int i;
 	int j=0;
 	Node *realRoot = root;
-	char readString[246];
 
 	printf("starting decoding \n");
 	for(i=0;InString[i]!='\0';){
@@ -323,10 +322,18 @@ void Decode(Node *root, char *InString, char *OutString){
 			i++;
 		}
 	}
-	OutString[j]=root->d;
-	OutString[j+1]='\0';
 	
-	printf("Decoded : %s\n", OutString);
+	if(isLeaf(root)){
+		OutString[j]=root->d;
+		OutString[j+1]='\0';
+		
+		printf("Decoded : %s\n", OutString);
+	}
+	else{
+		OutString[j]='\0';
+		printf("Decoded : %s\n", OutString);
+		printf("warning : bitstring provided have been corrupted\n");
+	}
 	return;
 }
 
@@ -387,7 +394,10 @@ void HuffmanCode(char *Symbols, float *Freq, Code *code){
 		file[strlen(file)-1] = '\0';
 	  }
 	  
-	  if(strcmp(file,"n")==0) return;
+	  if(strcmp(file,"n")==0){
+			printf("goodbye\n");
+			return;
+	  }
 
 	  printf("Introduza o nome do ficheiro que contém o código:\n");
 	  
