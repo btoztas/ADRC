@@ -294,10 +294,19 @@ void GenereteCode(Node *root, Code *code){
   searchCodeTree(root, code, hops, &nhop, &n);
 }
 
+int checkIfBitString(char *readString){
+	int i;
+	for(i=0;readString[i]!='\0'; i++){
+		if(readString[i] != '0' || readString[i] != '1') return 0;
+	}
+	return 1;
+}
+
 void Decode(Node *root, char *InString, char *OutString){
 	int i;
 	int j=0;
 	Node *realRoot = root;
+	char readString[246];
 
 	printf("starting decoding \n");
 	for(i=0;InString[i]!='\0';){
@@ -316,6 +325,8 @@ void Decode(Node *root, char *InString, char *OutString){
 	}
 	OutString[j]=root->d;
 	OutString[j+1]='\0';
+	
+	printf("Decoded : %s\n", OutString);
 	return;
 }
 

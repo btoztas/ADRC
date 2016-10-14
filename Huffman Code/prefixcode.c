@@ -25,6 +25,8 @@ int main(){
   Code = initCode(strlen(Symbols));
   GenereteCode(t->root, Code);
   printCode(Code, strlen(Symbols));
+  
+  
 
   /*while (!leave) {
     printf("OPTIONS:\nD - DECODE\nR - RELOAD FILE\nE - EXIT\n");
