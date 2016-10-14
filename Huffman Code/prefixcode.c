@@ -26,7 +26,7 @@ int main(){
   GenereteCode(t->root, Code);
   printCode(Code, strlen(Symbols));
 
-  while (!leave) {
+  /*while (!leave) {
     printf("OPTIONS:\nD - DECODE\nR - RELOAD FILE\nE - EXIT\n");
     scanf("%c\n", &option);
     switch (option) {
@@ -44,7 +44,7 @@ int main(){
         printf("Inserted a valid option\n");
         break;
     }
-  }
+  }*/
 
   exit(0);
 }
