@@ -32,9 +32,8 @@ void readFile(char *symbols, float *freq, char *file){
 		}
 	}
 	fclose(fp);
-	return;  
+	return;
 }
-			symbols[i]=line[0];
 
 void readFileS(char *symbols, char *file){
 	FILE *fp;
@@ -47,7 +46,7 @@ void readFileS(char *symbols, char *file){
 			symbols[i]=line[0];
 			fscanf(fp, "%c", &symbols[i+1]);
 			i++;
-		}else{  int i;ist[i]!=NULL)
+		}else{free
 			symbols[i]=line[0];
 			line++;
 			line++;
@@ -69,24 +68,6 @@ Code *initCode(int size){
     errorMalloc();
   return c;
 }
-
-void freeCode(Code* code, int size){
-  int i;
-  for(i=0; i<size; i++){
-    free((code->list[i])->c);
-    free(code->list[i]);
-  }
-  free(code);
-  return;
-}
-
-void freeHeap(Heap *h){
-
-  free(h->q);
-  free(h);
-  return;
-}
-
 
 Node *newNode(char d, float p){
   Node *n = (Node*) malloc(sizeof(Node));
@@ -115,7 +96,95 @@ int isLeaf(Node *n){
 
 Heap *initHeap(int size){
   int i;
-init  int i;
+  Heap *h = (Heap*) malloc(sizeof(Heap));
+  if(h==NULL)
+    errorMalloc();
+  h->q = (Node**) malloc(size*sizeof(Node));
+  if(h->q==NULL)
+    errorMalloc();
+  for(i=0; i<size; i++)
+    h->q[i] = NULL;
+  h->size = 0;
+  return h;
+}
+
+void fixHeapUp(Heap *h){
+  Node *aux;
+  int k = h->size-1;
+  while ((k > 0) && ((((h->q)[k])->p) < (((h->q)[(k-1)/2])->p)) ) {
+    aux = (h->q)[k];
+    (h->q)[k] = (h->q)[(k - 1) / 2];
+    (h->q)[(k - 1) / 2] = aux;
+    k = (k - 1) / 2;
+  }
+  return;
+}
+
+void addToHeap(Node *n, Heap *h){
+  h->q[h->size] = n;
+  h->size++;
+  if(h->size!=1)
+    fixHeapUp(h);
+  return;
+}
+
+void fixHeapDown(Heap *h){
+
+  printf("Starting fixHeapDown\n");
+  int i=0, k=0;
+  int found=0;
+  Node *aux;
+
+  if(h->size>1){
+    while (i < h->size && !found) {
+      k = 2*i+1;
+      if(k<h->size){
+        if(k+1<h->size){
+          if( ((((h->q)[i])->p) < (((h->q)[i*2+1])->p) && (((h->q)[i])->p) < (((h->q)[i*2+2])->p)) )
+            found = 1;
+          else{
+            aux = (h->q)[i];
+            k = ((h->q)[i*2+1])->p < ((h->q)[i*2+2])->p ? i*2+1 : i*2+2;
+
+            printf("Vou trocar o %c-%f com o %c-%f\n",(h->q)[i]->d, (h->q)[i]->p, (h->q)[k]->d, (h->q)[k]->p);
+            (h->q)[i] = (h->q)[k];
+            (h->q)[k] = aux;
+            i = k;
+
+          }
+        }
+        else if( (h->q)[i]->p < (h->q)[i*2+1]->p)
+          found = 1;
+        else{
+          aux = (h->q)[i];
+
+          printf("Vou trocar o %c-%f com o %c-%f\n",(h->q)[i]->d, (h->q)[i]->p, (h->q)[k]->d, (h->q)[k]->p);
+          (h->q)[i] = (h->q)[k];
+          (h->q)[k] = aux;
+          i = k;
+        }
+      }else
+        found=1;
+    }
+  }
+  return;
+}
+
+Node *removeFromHeap(Heap * h){
+  Node *n;
+  if (h->size > 0) {
+    n = (h->q)[0];
+    (h->q)[0] = (h->q)[h->size - 1];
+    (h->q)[h->size - 1] = NULL;
+    h->size--;
+    fixHeapDown(h);
+    return n;
+  }
+  return NULL;
+}
+
+void printHeap(Heap *h){
+  int i;
   if(h->size==0){
     printf("Heap is empty.\n");
   }else{
@@ -138,6 +207,33 @@ void printTree(Node *root){
   return;
 }
 
+void freeCode(Code* code, int size){
+  int i;
+  for(i=0; i<size; i++){
+    free((code->list[i])->c);
+    free(code->list[i]);
+  }
+  free(code);
+  return;
+}
+
+void freeHeap(Heap *h){
+
+  free(h->q);
+  free(h);
+
+  return;
+}
+
+void freeTree(Node *root){
+  freeTree(root->l);
+  freeTree(root->r);
+  if(isLeaf(root))
+    free(root);
+  return;
+}
+
+
 Tree *makeTree(char *Symbols, int size){
 
   int i, j;
@@ -146,8 +242,6 @@ Tree *makeTree(char *Symbols, int size){
   srand(time(NULL));
 
   for (i=0; i < size; i++) {
-
-
       printf("Adding node number %d to the tree. This node has value %c\n",i , Symbols[i]);
       new = newNode(Symbols[i],0);
       if(t->root==NULL){
@@ -158,13 +252,12 @@ Tree *makeTree(char *Symbols, int size){
         while(!isLeaf(q)){
           j=(rand()%2);
           p=q;
-
           if(!j){
             printf("Going to the left child.\n");
             q=q->l;
           }else{
             printf("Going to the right child.\n");
-            q=q->r;init
+            q=q->r;
           }
         }
         printf("Found the leaf.\n");
@@ -347,7 +440,7 @@ void HuffmanCode(char *Symbols, float *Freq, Code *code){
 	  Decode(t->root, file, OutString);
 
 	  fclose(fp);
-	  
+
 	  fp = NULL;
 
   }
