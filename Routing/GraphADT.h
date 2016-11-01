@@ -1,9 +1,22 @@
-typedef struct {int v; int w;} Edge;
+typedef struct {
+  int v;
+  int w;}
+Edge;
+
 Edge	EDGE(int, int);
 
 typedef struct node *link;
-struct node {int v; link next;};
-typedef struct {int V; int E; link *adj;} *Graph;
+struct node {
+  int v;
+  link next;
+};
+
+typedef struct {
+  int V;
+  int E;
+  link *adj
+;} *Graph;
+
 link NEW(int v, link next);
 
 Graph GRAPHinit(int);
