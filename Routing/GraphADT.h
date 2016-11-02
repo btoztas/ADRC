@@ -20,3 +20,4 @@ link *NEW(int v, int t, link *next);
 Graph *GRAPHinit(int);
 void GRAPHinsertE(Graph *, Edge *);
 void GRAPHshow(Graph*);
+void GRAPHfree(Graph*, int);

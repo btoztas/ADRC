@@ -28,8 +28,8 @@ Graph *GRAPHinit(int V) {
 void GRAPHinsertE(Graph *G, Edge *e) {
 	int		v = e->v;
 	int		w = e->w;
-	int  t_v = e->t;
-	int  t_w;
+	int   t_v = e->t;
+	int   t_w;
 	if(t_v == 2)
 		t_w = 2;
 	else
@@ -51,4 +51,18 @@ void GRAPHshow(Graph *G) {
 			printf(" %2d", t -> v);
 		printf("\n");
 	}
+}
+
+void GRAPHfree(Graph *G, int V){
+	int i;
+	link *aux;
+	for(i=0; i<V; i++)
+		while((G->adj[i])->next!=NULL){
+			aux = G->adj[i];
+			G->adj[i] = (G->adj[i])->next;
+			free(aux);
+		}
+	free(G->adj);
+	free(G);
+	return;
 }

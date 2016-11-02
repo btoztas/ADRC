@@ -2,13 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "GraphADT.h"
+#include "routing.h"
 
 #define MAX 256
-
-typedef struct _heap{
-  int size;                     /* max size of the heap. */
-  link **q;               /* An array of Items. */
-} Heap;
 
 void errorMalloc(){
   printf("Error allocating memory.\n");
@@ -18,7 +14,7 @@ void errorFile(){
   printf("Error opening file.\n");
   exit(-1);
 }
-
+/*
 Heap *initHeap(int size){
   int i;
 
@@ -26,7 +22,7 @@ Heap *initHeap(int size){
   if(h==NULL)
     errorMalloc();
 
-  h->q = (link**) malloc(size*sizeof(link));
+  h->q = (Node**) malloc(size*sizeof(link));
   if(h->q==NULL)
     errorMalloc();
 
@@ -40,14 +36,14 @@ Heap *initHeap(int size){
 void fixHeapUp(Heap *h){
   Node *aux;
   int k = h->size-1;
-  while ((k > 0) && ((((h->q)[k])->p) < (((h->q)[(k-1)/2])->p)) ) {
+  while ((k > 0) && ((((h->q)[k])->t) > (((h->q)[(k-1)/2])->t)) ) {
     aux = (h->q)[k];
     (h->q)[k] = (h->q)[(k - 1) / 2];
     (h->q)[(k - 1) / 2] = aux;
     k = (k - 1) / 2;
   }
   return;
-}
+}*/
 
 
 void readFile(char *fileName, Graph *G){
@@ -62,11 +58,4 @@ void readFile(char *fileName, Graph *G){
       GRAPHinsertE(G, e);
   free(e);
   fclose (fp);
-}
-
-
-int main(){
-
-
-  exit(0);
 }
