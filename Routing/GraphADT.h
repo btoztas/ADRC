@@ -1,28 +1,22 @@
-typedef struct {
+typedef struct _edge{
   int v;
-  int w;}
-Edge;
+  int w;
+  int t;
+} Edge;
 
-Edge	EDGE(int, int);
-
-typedef struct node *link;
-struct node {
+typedef struct _link{
   int v;
-  link next;
-};
+  int t;
+  struct _link *next;
+} link;
 
-typedef struct {
+typedef struct _Graph{
   int V;
   int E;
-  link *adj
-;} *Graph;
+  link **adj;
+} Graph;
 
-link NEW(int v, link next);
-
-Graph GRAPHinit(int);
-void GRAPHinsertE(Graph, Edge);
-void GRAPHshow(Graph);
-void GRAPHplot(Graph, char *);
-int randV(Graph);
-Graph GRAPHrandE(int, int);
-Graph GRAPHrandp(int, int);
+link *NEW(int v, int t, link *next);
+Graph *GRAPHinit(int);
+void GRAPHinsertE(Graph *, Edge *);
+void GRAPHshow(Graph*);
