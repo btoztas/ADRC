@@ -4,8 +4,6 @@
 #include "GraphADT.h"
 #include "routing.h"
 
-#define MAX 256
-
 void errorMalloc(){
   printf("Error allocating memory.\n");
   exit(-1);
@@ -45,7 +43,6 @@ void fixHeapUp(Heap *h){
   return;
 }*/
 
-
 void readFile(char *fileName, Graph *G){
   FILE *fp;
   Edge *e;
@@ -58,4 +55,54 @@ void readFile(char *fileName, Graph *G){
       GRAPHinsertE(G, e);
   free(e);
   fclose (fp);
+}
+
+FIFO *initFIFO(){
+  FIFO *f;
+  f = (FIFO*)malloc(sizeof(FIFO));
+  f->q = NULL;
+  f->last = NULL;
+  f->n=0;
+  return f;
+}
+
+void addFIFO(FIFO *f, int v, int t){
+  link *new;
+  new = (link*)malloc(sizeof(link));
+  new->v = v;
+  new->t = t;
+  new->next = NULL;
+
+  f->last->next = new;
+  f->last=new;
+  f->n++;
+  return;
+}
+
+void removeFIFO(FIFO *f, int *v, int *t){
+  link *aux;
+
+  *t   = (f->q)->t;
+  *v   = (f->q)->v;
+  aux  = f->q;
+  f->q = f->q->next;
+  f->n--;
+  free(aux);
+  return;
+}
+
+int emptyFIFO(FIFO *f){
+  if(f->n!=0)
+    return 0;
+  return 1;
+}
+
+void freeFIFO(FIFO *f){
+  link *aux;
+  while(f->q!=NULL){
+    aux = f->q;
+    f->q=f->q->next;
+    free(aux);
+  }
+  free(f);
 }
