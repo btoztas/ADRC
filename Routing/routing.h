@@ -22,3 +22,5 @@ void addFIFO(FIFO *f, int v, int t);
 void removeFIFO(FIFO *f, int *v, int *t);
 int emptyFIFO(FIFO *f);
 void freeFIFO(FIFO *f);
+
+int modeling(int A, int a);

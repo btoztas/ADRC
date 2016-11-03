@@ -17,7 +17,7 @@ Graph *GRAPHinit(int V) {
 	int	v;
 	Graph	*G = (Graph*)malloc(sizeof(Graph));
 
-	G -> V = V;
+	G -> V = 0;
 	G -> E = 0;
 	G -> adj = (link **) malloc(V*sizeof(link));
 	for (v = 0; v < V; v++)
@@ -30,6 +30,12 @@ void GRAPHinsertE(Graph *G, Edge *e) {
 	int		w = e->w;
 	int   t_v = e->t;
 	int   t_w;
+
+	if(w+1 > G->V)
+		G -> V = w+1;
+	if(v > G->V)
+		G -> V = v+1;
+
 	if(t_v == 2)
 		t_w = 2;
 	else
@@ -38,6 +44,7 @@ void GRAPHinsertE(Graph *G, Edge *e) {
 	G -> adj[v] = NEW(w, t_v, G -> adj[v]);
 	G -> adj[w] = NEW(v, t_w, G -> adj[w]);
 	G -> E++;
+
 }
 
 void GRAPHshow(Graph *G) {
@@ -46,18 +53,18 @@ void GRAPHshow(Graph *G) {
 
 	printf("%d vertices, %d edges\n", G -> V, G -> E);
 	for (v = 0; v < G -> V; v++) {
-		printf("%2d:", v);
+		printf("%2d:", v+1);
 		for (t = G -> adj[v]; t != NULL; t = t -> next)
-			printf(" %2d", t -> v);
+			printf(" (%d,%d)", t -> v+1, t->t);
 		printf("\n");
 	}
 }
 
-void GRAPHfree(Graph *G, int V){
+void GRAPHfree(Graph *G){
 	int i;
 	link *aux;
-	for(i=0; i<V; i++)
-		while((G->adj[i])->next!=NULL){
+	for(i=0; i<G->V; i++)
+		while((G->adj[i])!=NULL){
 			aux = G->adj[i];
 			G->adj[i] = (G->adj[i])->next;
 			free(aux);

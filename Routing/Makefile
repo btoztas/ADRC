@@ -1,2 +1,2 @@
 all:
-	gcc -g -Wall alg1.c routing.c GraphADT.c -o routing
+	gcc -O -Wall alg1.c routing.c GraphADT.c -o alg1

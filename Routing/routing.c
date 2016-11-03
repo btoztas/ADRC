@@ -51,8 +51,12 @@ void readFile(char *fileName, Graph *G){
   if (fp==NULL)
     errorFile();
   else
-    while(fscanf(fp, "%d %d %d", &(e->v), &(e->w), &(e->t)))
+    while(fscanf(fp, "%d %d %d", &(e->v), &(e->w), &(e->t))!=-1){
+      e->v--;
+      e->w--;
       GRAPHinsertE(G, e);
+      //printf("Inserted edge %d-%d type %d.\n", e->v, e->w, e->t);
+    }
   free(e);
   fclose (fp);
 }
@@ -62,7 +66,7 @@ FIFO *initFIFO(){
   f = (FIFO*)malloc(sizeof(FIFO));
   f->q = NULL;
   f->last = NULL;
-  f->n=0;
+  f->n = 0;
   return f;
 }
 
@@ -72,9 +76,12 @@ void addFIFO(FIFO *f, int v, int t){
   new->v = v;
   new->t = t;
   new->next = NULL;
-
-  f->last->next = new;
-  f->last=new;
+  if(f->n==0){
+    f->last = f->q = new;
+  }else{
+    f->last->next = new;
+    f->last=new;
+  }
   f->n++;
   return;
 }
@@ -105,4 +112,42 @@ void freeFIFO(FIFO *f){
     free(aux);
   }
   free(f);
+}
+
+int modeling(int A, int a){
+	switch(A) {
+	   case 3:
+		  switch(a) {
+			  case 3:
+				return 3;
+        break;
+
+			  default :
+			  return 0;
+        break;
+		  }
+
+	   case 2:
+		  switch(a) {
+			  case 3:
+				return 2;
+        break;
+
+			  default :
+			  return 0;
+        break;
+		  }
+
+	  case 1:
+		  switch(a) {
+			  case 0:
+				return 0;
+        break;
+
+			  default:
+			  return 1;
+        break;
+		  }
+	}
+  return -1;
 }
