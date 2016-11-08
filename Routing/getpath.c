@@ -26,7 +26,7 @@ int main(int argc, char *argv[]){
   //GRAPHshow(G);
 
   getNodePathType(G, atoi(argv[2]), out1);
-  bestComercialRoute(G, atoi(argv[2]), out2);
+  //bestComercialRoute(G, atoi(argv[2]), out2);
   printf("Wrote results to file %s and %s.\n", out1, out2);
 
   GRAPHfree(G);

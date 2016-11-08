@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 #include "GraphADT.h"
 #include "routing.h"
 
@@ -73,6 +74,24 @@ void printHeap(Heap *h){
     printf("\n");
   }
   return;
+}
+
+Heap *initHeap(int size){
+  int i;
+
+  Heap *h = (Heap*)malloc(sizeof(Heap));
+  if(h==NULL)
+    errorMalloc();
+
+  h->q = (Node**) malloc(size*sizeof(link));
+  if(h->q==NULL)
+    errorMalloc();
+
+  for(i=0; i<size; i++)
+    h->q[i] = NULL;
+  h->size = 0;
+
+  return h;
 }
 
 void freeHeap(Heap *h){
@@ -191,10 +210,104 @@ Node *removeFromHeap(Heap * h){
 }
 
 
-void getNodePathType(Graph *G, int s, char *outfile){
-  FIFO *f = initFIFO();
+FIFO *initFIFO(){
+  FIFO *f;
+  f = (FIFO*)malloc(sizeof(FIFO));
+  f->q = NULL;
+  f->last = NULL;
+  f->n = 0;
+  return f;
+}
 
-  //printf("Initiated FIFO\n");
+void addFIFO(FIFO *f, int v, int t){
+  link *new;
+  new = (link*)malloc(sizeof(link));
+  new->v = v;
+  new->t = t;
+  new->next = NULL;
+  if(f->n==0){
+    f->last = f->q = new;
+  }else{
+    f->last->next = new;
+    f->last=new;
+  }
+  f->n++;
+  return;
+}
+
+void removeFIFO(FIFO *f, int *v, int *t){
+  link *aux;
+
+  *t   = (f->q)->t;
+  *v   = (f->q)->v;
+  aux  = f->q;
+  f->q = f->q->next;
+  f->n--;
+  free(aux);
+  return;
+}
+
+int emptyFIFO(FIFO *f){
+  if(f->n!=0)
+    return 0;
+  return 1;
+}
+
+void freeFIFO(FIFO *f){
+  link *aux;
+  while(f->q!=NULL){
+    aux = f->q;
+    f->q=f->q->next;
+    free(aux);
+  }
+  free(f);
+}
+
+
+QUEUE *initQUEUE(){
+  QUEUE *q = (QUEUE *)malloc(sizeof(QUEUE));
+  q->c = initFIFO();
+  q->r = initFIFO();
+  q->p = initFIFO();
+  return q;
+}
+
+void addQUEUE(QUEUE *q, int u, int t){
+  if(t==3)
+    addFIFO(q->c, u, t);
+  else if(t==2)
+    addFIFO(q->r, u, t);
+  else if(t==1)
+    addFIFO(q->p, u, t);
+  return;
+}
+
+void removeQUEUE(QUEUE *q, int *u, int *t){
+  if(!emptyFIFO(q->c))
+    removeFIFO(q->c, u, t);
+  else if(!emptyFIFO(q->r))
+    removeFIFO(q->c, u, t);
+  else if(!emptyFIFO(q->p))
+    removeFIFO(q->c, u, t);
+  return;
+}
+
+int emptyQUEUE(QUEUE *q){
+  if(emptyFIFO(q->c) && emptyFIFO(q->c) && emptyFIFO(q->c))
+    return 1;
+  return 0;
+}
+
+void freeQUEUE(QUEUE *q){
+  freeFIFO(q->c);
+  freeFIFO(q->r);
+  freeFIFO(q->p);
+  free(q);
+}
+
+void getNodePathType(Graph *G, int s, char *outfile){
+  QUEUE *q = initQUEUE();
+  //printf("Initiated QUEUE\n");
   int *V;
   int *T;
   int u, v, t;
@@ -205,10 +318,10 @@ void getNodePathType(Graph *G, int s, char *outfile){
   s--;
   T[s] = 3;
 
-  addFIFO(f, s, T[s]);
+  addQUEUE(q, s, T[s]);
   //printf("Added node %d to FIFO\n", s+1);
-  while(!emptyFIFO(f)){
-    removeFIFO(f, &u, &t);
+  while(!emptyQUEUE(q)){
+    removeQUEUE(q, &u, &t);
     //printf("Removed node %d type %d from FIFO\n", u+1, t);
     aux = G->adj[u];
     while(aux != NULL){
@@ -217,7 +330,7 @@ void getNodePathType(Graph *G, int s, char *outfile){
         if(modeling(aux->t, T[u]) > T[v]){
           T[v] = modeling(aux->t, T[u]);
           //printf("Added node %d to FIFO\n", v+1);
-          addFIFO(f, v, T[v]);
+          addQUEUE(q, v, T[v]);
         }
       aux=aux->next;
     }
@@ -233,7 +346,7 @@ void getNodePathType(Graph *G, int s, char *outfile){
   }
   free(T);
   free(V);
-  freeFIFO(f);
+  freeQUEUE(q);
   return;
 }
 
@@ -255,7 +368,7 @@ void Disjkstra(Graph *Network, Node **path, int destiny_id){
 	for(i=0;i<(Network->V);i++){
 		verify[i] = 0;
 		path[i]->t = 0;
-		path[i]->nhops = MAX;
+		path[i]->nhops = INT_MAX;
 		path[i]->next = -1;
 	}
 
@@ -336,24 +449,6 @@ void bestComercialRoute(Graph *Network, int destiny_id, char *outfile){
   free(path);
 }
 
-Heap *initHeap(int size){
-  int i;
-
-  Heap *h = (Heap*)malloc(sizeof(Heap));
-  if(h==NULL)
-    errorMalloc();
-
-  h->q = (Node**) malloc(size*sizeof(link));
-  if(h->q==NULL)
-    errorMalloc();
-
-  for(i=0; i<size; i++)
-    h->q[i] = NULL;
-  h->size = 0;
-
-  return h;
-}
-
 void readFile(char *fileName, Graph *G){
   FILE *fp;
   Edge *e;
@@ -370,57 +465,4 @@ void readFile(char *fileName, Graph *G){
     }
   free(e);
   fclose (fp);
-}
-
-FIFO *initFIFO(){
-  FIFO *f;
-  f = (FIFO*)malloc(sizeof(FIFO));
-  f->q = NULL;
-  f->last = NULL;
-  f->n = 0;
-  return f;
-}
-
-void addFIFO(FIFO *f, int v, int t){
-  link *new;
-  new = (link*)malloc(sizeof(link));
-  new->v = v;
-  new->t = t;
-  new->next = NULL;
-  if(f->n==0){
-    f->last = f->q = new;
-  }else{
-    f->last->next = new;
-    f->last=new;
-  }
-  f->n++;
-  return;
-}
-
-void removeFIFO(FIFO *f, int *v, int *t){
-  link *aux;
-
-  *t   = (f->q)->t;
-  *v   = (f->q)->v;
-  aux  = f->q;
-  f->q = f->q->next;
-  f->n--;
-  free(aux);
-  return;
-}
-
-int emptyFIFO(FIFO *f){
-  if(f->n!=0)
-    return 0;
-  return 1;
-}
-
-void freeFIFO(FIFO *f){
-  link *aux;
-  while(f->q!=NULL){
-    aux = f->q;
-    f->q=f->q->next;
-    free(aux);
-  }
-  free(f);
 }

@@ -16,6 +16,10 @@ typedef struct _fifo{
   link *last;
 } FIFO;
 
+typedef struct _QUEUE{
+  FIFO *c, *r, *p;
+} QUEUE;
+
 void getNodePathType(Graph *G, int s, char *outfile);
 
 int modeling(int A, int a);
