@@ -1,0 +1,14 @@
+AS 1 - 1 hops - Provider path
+AS 2 - 2 hops - Provider path
+AS 3 - 0 hops - Costumer path
+AS 4 - 1 hops - Peer path
+AS 5 - Unreachable
+AS 6 - Unreachable
+AS 7 - Unreachable
+AS 8 - Unreachable
+AS 9 - Unreachable
+AS 10 - Unreachable
+AS 11 - Unreachable
+AS 12 - Unreachable
+AS 13 - Unreachable
+AS 14 - Unreachable

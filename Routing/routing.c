@@ -70,7 +70,7 @@ void printHeap(Heap *h){
     printf("Heap is empty.\n");
   }else{
     for(i=0; i<h->size; i++)
-      printf("%d %d %d %d\n", (h->q[i])->v,(h->q[i])->t, (h->q[i])->nhops, (h->q[i])->next);
+      printf("%d %d %d %d\n", (h->q[i])->v,(h->q[i])->t, (h->q[i])->nhops, (h->q[i])->nex);
     printf("\n");
   }
   return;
@@ -286,14 +286,14 @@ void removeQUEUE(QUEUE *q, int *u, int *t){
   if(!emptyFIFO(q->c))
     removeFIFO(q->c, u, t);
   else if(!emptyFIFO(q->r))
-    removeFIFO(q->c, u, t);
+    removeFIFO(q->r, u, t);
   else if(!emptyFIFO(q->p))
-    removeFIFO(q->c, u, t);
+    removeFIFO(q->p, u, t);
   return;
 }
 
 int emptyQUEUE(QUEUE *q){
-  if(emptyFIFO(q->c) && emptyFIFO(q->c) && emptyFIFO(q->c))
+  if(emptyFIFO(q->c) && emptyFIFO(q->r) && emptyFIFO(q->p))
     return 1;
   return 0;
 }
@@ -304,6 +304,98 @@ void freeQUEUE(QUEUE *q){
   freeFIFO(q->p);
   free(q);
 }
+
+FIFO2 *initFIFO2(){
+  FIFO2 *f;
+  f = (FIFO2*)malloc(sizeof(FIFO2));
+  f->q = NULL;
+  f->last = NULL;
+  f->n = 0;
+  return f;
+}
+
+void addFIFO2(FIFO2 *f, Node *N){
+  Node *new;
+  new = (Node*)malloc(sizeof(Node));
+  new->v = N->v;
+  new->t = N->t;
+  new->nex = N->nex;
+  new->nhops = N->nhops;
+  new->next = NULL;
+  if(f->n==0){
+    f->last = f->q = new;
+  }else{
+    f->last->next = new;
+    f->last=new;
+  }
+  f->n++;
+  return;
+}
+
+Node *removeFIFO2(FIFO2 *f){
+  Node *aux = f->q;
+  f->q = f->q->next;
+  f->n--;
+  return aux;
+}
+
+int emptyFIFO2(FIFO2 *f){
+  if(f->n!=0)
+    return 0;
+  return 1;
+}
+
+void freeFIFO2(FIFO2 *f){
+  Node *aux;
+  while(f->q!=NULL){
+    aux = f->q;
+    f->q=f->q->next;
+    free(aux);
+  }
+  free(f);
+}
+
+QUEUE2 *initQUEUE2(){
+  QUEUE2 *q = (QUEUE2 *)malloc(sizeof(QUEUE2));
+  q->c = initFIFO2();
+  q->r = initFIFO2();
+  q->p = initFIFO2();
+  return q;
+}
+
+void addQUEUE2(QUEUE2 *q, Node *N){
+  if(N->t==3)
+    addFIFO2(q->c, N);
+  else if(N->t==2)
+    addFIFO2(q->r, N);
+  else if(N->t==1)
+    addFIFO2(q->p, N);
+  return;
+}
+
+Node *removeQUEUE2(QUEUE2 *q){
+  if(!emptyFIFO2(q->c))
+    return removeFIFO2(q->c);
+  else if(!emptyFIFO2(q->r))
+    return removeFIFO2(q->r);
+  else if(!emptyFIFO2(q->p))
+    return removeFIFO2(q->p);
+  return NULL;
+}
+
+int emptyQUEUE2(QUEUE2 *q){
+  if(emptyFIFO2(q->c) && emptyFIFO2(q->r) && emptyFIFO2(q->p))
+    return 1;
+  return 0;
+}
+
+void freeQUEUE2(QUEUE2 *q){
+  freeFIFO2(q->c);
+  freeFIFO2(q->r);
+  freeFIFO2(q->p);
+  free(q);
+}
+
 
 void getNodePathType(Graph *G, int s, char *outfile){
   QUEUE *q = initQUEUE();
@@ -351,15 +443,13 @@ void getNodePathType(Graph *G, int s, char *outfile){
 }
 
 
-
-void Disjkstra(Graph *Network, Node **path, int destiny_id){
+void Dijkstra(Graph *Network, Node **path, int destiny_id){
 	int *verify;
 	Node *a;
-	Heap *H;
 	int i;
 	link *aux;
 
-	H = initHeap(Network->V);
+	QUEUE2 *q = initQUEUE2();
 
 	verify = (int*)malloc((Network->V)*sizeof(int));
 
@@ -368,24 +458,22 @@ void Disjkstra(Graph *Network, Node **path, int destiny_id){
 	for(i=0;i<(Network->V);i++){
 		verify[i] = 0;
 		path[i]->t = 0;
-		path[i]->nhops = INT_MAX;
-		path[i]->next = -1;
+		path[i]->nhops = MAX;
+		path[i]->nex = -1;
 	}
 
 	//printf("estou aqui \n");
 
-	destiny_id = destiny_id;
 
 	path[destiny_id - 1]->v = destiny_id;
 	path[destiny_id - 1]->t = 3;
 	path[destiny_id - 1]->nhops = 0;
-	path[destiny_id - 1]->next = destiny_id;
+	path[destiny_id - 1]->nex = destiny_id;
+	addQUEUE2(q, path[destiny_id - 1]);
 
-	addToHeap(path[destiny_id - 1], H);
-
-	for(i=0; H->size > 0; i++){
+	while(!emptyQUEUE2(q)){
 		//printHeap(H);
-		a = removeFromHeap(H);
+		a = removeQUEUE2(q);
 		//printf("iteração %d com o nó %d\n", i, a->v);
 		verify[(a->v)-1] = 1;
 		//printf("retirado o nó %d do Heap\n", a->v);
@@ -395,25 +483,27 @@ void Disjkstra(Graph *Network, Node **path, int destiny_id){
 				//printf("ainda não verificada\n");
 				//printf("%d ( %d ) = %d será maior que %d?\n", aux->t, a->t, modeling(aux->t, a->t), path[(aux->v)]->t);
 				if(modeling(aux->t, a->t) > path[(aux->v)]->t){
-					//printf("melhorou por tipo\n");
+				//	printf("melhorou por tipo\n");
 					path[(aux->v)]->v = aux->v + 1;
-					path[(aux->v)]->next = a->v;
+					path[(aux->v)]->nex = a->v;
 					path[(aux->v)]->t = modeling(aux->t, a->t);
 					path[(aux->v)]->nhops = a->nhops + 1;
-					addToHeap(path[(aux->v)], H);
+					addQUEUE2(q, path[(aux->v)]);
 				}else if(modeling(aux->t, a->t) == path[(aux->v)]->t && (a->nhops + 1) < path[(aux->v)]->nhops){
-					//printf("melhorou por saltos\n");
-					path[(aux->v)]->next = a->v;
+			//		printf("melhorou por saltos\n");
+					path[(aux->v)]->nex = a->v;
 					path[(aux->v)]->v = aux->v + 1;
 					path[(aux->v)]->nhops = a->nhops + 1;
-					addToHeap(path[(aux->v)], H);
+					addQUEUE2(q, path[(aux->v)]);
 				}
 			}
 		}
+		//printf("realxado o nó %d \n", a->v);
 	}
 
-  freeHeap(H);
+  //freeHeap(H);
   free(verify);
+  freeQUEUE2(q);
 }
 
 void bestComercialRoute(Graph *Network, int destiny_id, char *outfile){
@@ -427,8 +517,7 @@ void bestComercialRoute(Graph *Network, int destiny_id, char *outfile){
 		path[i] = (Node*)malloc(sizeof(Node));
 	}
 
-
-	Disjkstra(Network, path, destiny_id);
+	Dijkstra(Network, path, destiny_id);
 
 	FILE *fp;
   fp = fopen (outfile,"w");
