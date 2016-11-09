@@ -2,8 +2,7 @@ typedef struct _Node{
   int v;
   int t;
   int nhops;
-  int nex;
-  struct _Node *next;
+  int next;
 } Node;
 
 typedef struct _heap{
@@ -50,7 +49,7 @@ void addToHeap(Node *n, Heap *h);
 void fixHeapDown(Heap *h);
 Node *removeFromHeap(Heap * h);
 
-
+void getSmallPath(Graph *Network, int destiny, char *outfile);
 void bestComercialRoute(Graph *Network, int destiny_id, char *outfile);
 void Dijsktra(Graph *Network, Node **path, int destiny_id);
 
