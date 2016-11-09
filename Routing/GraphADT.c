@@ -41,7 +41,7 @@ void GRAPHinsertE(Graph *G, Edge *e) {
 	else
 		t_w = t_v == 3 ? 1 : 3;
 
-	G -> adj[v] = NEW(w, t_v, G -> adj[v]);
+
 	G -> adj[w] = NEW(v, t_w, G -> adj[w]);
 	G -> E++;
 

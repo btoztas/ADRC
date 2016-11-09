@@ -3,6 +3,7 @@ typedef struct _Node{
   int t;
   int nhops;
   int next;
+  struct _Node *next_node;
 } Node;
 
 typedef struct _heap{
