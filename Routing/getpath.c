@@ -25,11 +25,13 @@ int main(int argc, char *argv[]){
 
   Graph *G = GRAPHinit(MAX);
   readFile(name, G);
+  int vetor[G->V];
+
   printf("Completed reading file.\n");
   //GRAPHshow(G);
 
-  getNodePathType(G, atoi(argv[2]), out1);
-  bestComercialRoute(G, atoi(argv[2]), out2);
+  getNodePathType(G, atoi(argv[2]), out1, vetor);
+  bestComercialRoute(G, atoi(argv[2]), out2, vetor);
   getSmallPath(G, atoi(argv[2]), out3);
   printf("Wrote results to file %s, %s and %s.\n", out1, out2, out3);
 

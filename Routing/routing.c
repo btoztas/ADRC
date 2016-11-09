@@ -398,7 +398,7 @@ void freeQUEUE2(QUEUE2 *q){
   free(q);
 }*/
 
-void getNodePathType(Graph *G, int s, char *outfile){
+void getNodePathType(Graph *G, int s, char *outfile, int *vetor){
   QUEUE *q = initQUEUE();
   //printf("Initiated QUEUE\n");
   int *T, *Q;
@@ -440,6 +440,11 @@ void getNodePathType(Graph *G, int s, char *outfile){
     }
     fclose (fp);
   }
+
+  for(i=0;i<G->V;i++){
+    vetor[i]=T[i];
+  }
+
   free(T);
   freeQUEUE(q);
   return;
@@ -465,7 +470,7 @@ void getNodeHops(Graph *G, int s, char *outfile){
 }*/
 
 
-void Dijkstra(Graph *Network, Node **path, int destiny_id){
+void Dijkstra(Graph *Network, Node **path, int destiny_id, int *type){
 	int *verify;
 	Node *a;
 	Heap *H;
@@ -500,30 +505,18 @@ void Dijkstra(Graph *Network, Node **path, int destiny_id){
 		//printHeap(H);
 		a = removeFromHeap(H);
 		//printf("iteração %d com o nó %d\n", i, a->v);
-		verify[(a->v)-1] = 1;
+		//verify[(a->v)-1] = 1;
 		//printf("retirado o nó %d do Heap\n", a->v);
 		for(aux = Network->adj[(a->v) - 1];aux != NULL; aux=aux->next){
-
-        //printf("A relaxar aresta com nó %d\n", aux->v + 1);
-				//printf("ainda não verificada\n");
-				//printf("%d ( %d ) = %d será maior que %d?\n", aux->t, a->t, modeling(aux->t, a->t), path[(aux->v)]->t);
-				if(modeling(aux->t, a->t) > path[(aux->v)]->t){
-					//printf("melhorou por tipo\n");
-					path[(aux->v)]->v = aux->v + 1;
-					path[(aux->v)]->next = a->v;
-					path[(aux->v)]->t = modeling(aux->t, a->t);
-					path[(aux->v)]->nhops = a->nhops + 1;
-					addToHeap(path[(aux->v)], H);
-				}/*else if(modeling(aux->t, a->t) == path[(aux->v)]->t && (a->nhops + 1) < path[(aux->v)]->nhops){
-          if(verify[(aux->v)] == 0){
-					//printf("melhorou por saltos\n");
-					path[(aux->v)]->next = a->v;
-					path[(aux->v)]->v = aux->v + 1;
-					path[(aux->v)]->nhops = a->nhops + 1;
-					addToHeap(path[(aux->v)], H);
-          verify[aux->v] = 1;
-				}
-			}*/
+      if(modeling(aux->t, a->t) == type[(aux->v)] && verify[aux->v] == 0){
+				//printf("melhorou por tipo\n");
+				path[(aux->v)]->v = aux->v + 1;
+				path[(aux->v)]->next = a->v;
+				path[(aux->v)]->t = modeling(aux->t, a->t);
+				path[(aux->v)]->nhops = a->nhops + 1;
+				addToHeap(path[(aux->v)], H);
+        verify[aux->v] = 1;
+			}
 		}
 	}
 
@@ -531,19 +524,18 @@ void Dijkstra(Graph *Network, Node **path, int destiny_id){
   free(verify);
 }
 
-void bestComercialRoute(Graph *Network, int destiny_id, char *outfile){
+void bestComercialRoute(Graph *Network, int destiny_id, char *outfile, int *vetor){
 
 	Node **path;
 	int i;
 
 	path = (Node**)malloc(sizeof(Node*)*(Network->V));
-
 	for (i = 0; i < (Network->V);i++){
 		path[i] = (Node*)malloc(sizeof(Node));
 	}
 
 
-	Dijkstra(Network, path, destiny_id);
+	Dijkstra(Network, path, destiny_id, vetor);
 
 	FILE *fp;
   fp = fopen (outfile,"w");
@@ -552,8 +544,8 @@ void bestComercialRoute(Graph *Network, int destiny_id, char *outfile){
   	  if((path[i-1]->nhops) == MAX){
   		  fprintf(fp, "AS %d - Unreachable\n", i);
   	  }else{
-  		//fprintf(fp, "AS %d - %d hops - %s\n", i, path[i-1]->nhops, numToType(path[i-1]->t));
-      fprintf(fp, "AS %d - %s\n", i, numToType(path[i-1]->t));
+  		fprintf(fp, "AS %d - %d hops - %s\n", i, path[i-1]->nhops, numToType(path[i-1]->t));
+      //fprintf(fp, "AS %d - %s\n", i, numToType(path[i-1]->t));
   	  }
     }
   }

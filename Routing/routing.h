@@ -31,7 +31,7 @@ typedef struct _queue2{
 } QUEUE2;
 
 
-void getNodePathType(Graph *G, int s, char *outfile);
+void getNodePathType(Graph *G, int s, char *outfile, int *vetor);
 
 int modeling(int A, int a);
 
@@ -50,7 +50,7 @@ void fixHeapDown(Heap *h);
 Node *removeFromHeap(Heap * h);
 
 void getSmallPath(Graph *Network, int destiny, char *outfile);
-void bestComercialRoute(Graph *Network, int destiny_id, char *outfile);
-void Dijsktra(Graph *Network, Node **path, int destiny_id);
+void bestComercialRoute(Graph *Network, int destiny_id, char *outfile, int *vetor);
+void Dijsktra(Graph *Network, Node **path, int destiny_id, int *type);
 
 void readFile(char *fileName, Graph *G);
