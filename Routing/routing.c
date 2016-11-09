@@ -444,28 +444,26 @@ void getNodePathType(Graph *G, int s, char *outfile){
   freeQUEUE(q);
   return;
 }
-
 /*
 void getNodeHops(Graph *G, int s, char *outfile){
 
-  int *V, *T, *Q, *H;
+  int *T, *Q, *H;
   int u, v, t, k;
   link *aux;
   int i;
-  V = (int *)calloc(G->V,sizeof(int));
   T = (int *)calloc(G->V,sizeof(int));
   Q = (int *)calloc(G->V,sizeof(int));
   H = (int *)calloc(G->V,sizeof(int));
   s--;
   T[s] = 3;
   Q[s] = 1;
+  addQUEUE(q, s, T[s]);
 
 
 
 
+}*/
 
-}
-*/
 
 void Dijkstra(Graph *Network, Node **path, int destiny_id){
 	int *verify;
@@ -524,8 +522,8 @@ void Dijkstra(Graph *Network, Node **path, int destiny_id){
 					path[(aux->v)]->nhops = a->nhops + 1;
 					addToHeap(path[(aux->v)], H);
           verify[aux->v] = 1;
-				}*/
-			}
+				}
+			}*/
 		}
 	}
 
