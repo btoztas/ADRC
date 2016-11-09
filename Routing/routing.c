@@ -542,10 +542,10 @@ void bestComercialRoute(Graph *Network, int destiny_id, char *outfile, int *veto
   if (fp!=NULL)  {
     for(i=1; i < ((Network->V)+1); i++){
   	  if((path[i-1]->nhops) == MAX){
-        if(Network->adj[i]!=NULL)
+        if(Network->adj[i-1]!=NULL)
   		    fprintf(fp, "AS %d - Unreachable\n", i);
   	  }else{
-        if(Network->adj[i]!=NULL)
+        if(Network->adj[i-1]!=NULL)
   		    fprintf(fp, "AS %d - %d hops - %s\n", i, path[i-1]->nhops, numToType(path[i-1]->t));
           //fprintf(fp, "AS %d - %s\n", i, numToType(path[i-1]->t));
   	  }

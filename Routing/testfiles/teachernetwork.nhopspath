@@ -1,0 +1,7 @@
+AS 1 - 5 hops - Provider path
+AS 2 - 4 hops - Costumer path
+AS 3 - 1 hops - Costumer path
+AS 4 - 3 hops - Costumer path
+AS 5 - 2 hops - Costumer path
+AS 6 - 1 hops - Costumer path
+AS 7 - 0 hops - Costumer path
