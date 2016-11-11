@@ -7,6 +7,14 @@
 
 #define MAX 500000
 
+extern int maxHops;
+extern long int countStatistics[100];
+extern long int Total;
+
+extern int maxHopsBFS;
+extern long int countStatisticsBFS[100];
+extern long int TotalBFS;
+
 void errorMalloc(){
   printf("Error allocating memory.\n");
   exit(-1);
@@ -64,152 +72,6 @@ char *numToType(int n){
 	return "Unreachable";
 }
 
-void printHeap(Heap *h){
-  int i;
-  if(h->size==0){
-    printf("Heap is empty.\n");
-  }else{
-    for(i=0; i<h->size; i++)
-      printf("%d %d %d %d\n", (h->q[i])->v,(h->q[i])->t, (h->q[i])->nhops, (h->q[i])->next);
-    printf("\n");
-  }
-  return;
-}
-
-Heap *initHeap(int size){
-  int i;
-
-  Heap *h = (Heap*)malloc(sizeof(Heap));
-  if(h==NULL)
-    errorMalloc();
-
-  h->q = (Node**) malloc(size*sizeof(link));
-  if(h->q==NULL)
-    errorMalloc();
-
-  for(i=0; i<size; i++)
-    h->q[i] = NULL;
-  h->size = 0;
-
-  return h;
-}
-
-void freeHeap(Heap *h){
-
-  free(h->q);
-  free(h);
-
-  return;
-}
-
-void fixHeapUp(Heap *h){
-  Node *aux;
-  int i =0;
-  int k = h->size-1;
-  while ((k > 0) && i == 0) {
-
-	if(((((h->q)[k])->t) > (((h->q)[(k-1)/2])->t))){
-		aux = (h->q)[k];
-		(h->q)[k] = (h->q)[(k - 1) / 2];
-		(h->q)[(k - 1) / 2] = aux;
-		k = (k - 1) / 2;
-	}else if(((((h->q)[k])->t) == (((h->q)[(k-1)/2])->t)) && ((((h->q)[k])->nhops) < (((h->q)[(k-1)/2])->nhops))){
-		aux = (h->q)[k];
-		(h->q)[k] = (h->q)[(k - 1) / 2];
-		(h->q)[(k - 1) / 2] = aux;
-		k = (k - 1) / 2;
-	}else{
-		i=1;
-	}
-  }
-  return;
-}
-
-void addToHeap(Node *n, Heap *h){
-  h->q[h->size] = n;
-  h->size++;
-  if(h->size!=1)
-    fixHeapUp(h);
-  return;
-}
-
-void fixHeapDown(Heap *h){
-
-  //printf("Starting fixHeapDown\n");
-  int i=0, k=0;
-  int found=0;
-  Node *aux;
-
-  if(h->size>1){
-    while (i < h->size && !found) {
-      k = 2*i+1;
-      if(k<h->size){
-        if(k+1<h->size){
-          if( ((((h->q)[i])->t) > (((h->q)[i*2+1])->t) && (((h->q)[i])->t) > (((h->q)[i*2+2])->t)) ){
-            found = 1;
-          }else if(((((h->q)[i])->t) == (((h->q)[i*2+1])->t) && (((h->q)[i])->t) == (((h->q)[i*2+2])->t))){
-			if( ((((h->q)[i])->nhops) < (((h->q)[i*2+1])->nhops) && (((h->q)[i])->nhops) < (((h->q)[i*2+2])->nhops)) ){
-				found = 1;
-			}
-			else{
-				aux = (h->q)[i];
-				k = ((h->q)[i*2+1])->nhops < ((h->q)[i*2+2])->nhops ? i*2+1 : i*2+2;
-				//printf("Vou trocar o %c-%f com o %c-%f\n",(h->q)[i]->d, (h->q)[i]->p, (h->q)[k]->d, (h->q)[k]->p);
-				(h->q)[i] = (h->q)[k];
-				(h->q)[k] = aux;
-				i = k;
-			}
-          }else{
-            aux = (h->q)[i];
-            k = ((h->q)[i*2+1])->t < ((h->q)[i*2+2])->t ? i*2+1 : i*2+2;
-            //printf("Vou trocar o %c-%f com o %c-%f\n",(h->q)[i]->d, (h->q)[i]->p, (h->q)[k]->d, (h->q)[k]->p);
-            (h->q)[i] = (h->q)[k];
-            (h->q)[k] = aux;
-            i = k;
-          }
-        }
-        else if( (h->q)[i]->t > (h->q)[i*2+1]->t){
-          found = 1;
-        }
-        else if( (h->q)[i]->t == (h->q)[i*2+1]->t){
-			if((h->q)[i]->nhops < (h->q)[i*2+1]->nhops){
-				found=1;
-			}else{
-				aux = (h->q)[i];
-				//printf("Vou trocar o %c-%f com o %c-%f\n",(h->q)[i]->d, (h->q)[i]->p, (h->q)[k]->d, (h->q)[k]->p);
-				(h->q)[i] = (h->q)[k];
-				(h->q)[k] = aux;
-				i = k;
-			}
-		}
-        else{
-          aux = (h->q)[i];
-          //printf("Vou trocar o %c-%f com o %c-%f\n",(h->q)[i]->d, (h->q)[i]->p, (h->q)[k]->d, (h->q)[k]->p);
-          (h->q)[i] = (h->q)[k];
-          (h->q)[k] = aux;
-          i = k;
-        }
-      }else
-        found=1;
-    }
-  }
-  return;
-}
-
-Node *removeFromHeap(Heap * h){
-  Node *n;
-  if (h->size > 0) {
-    n = (h->q)[0];
-    (h->q)[0] = (h->q)[h->size - 1];
-    (h->q)[h->size - 1] = NULL;
-    h->size--;
-    fixHeapDown(h);
-    return n;
-  }
-  return NULL;
-}
-
-
 FIFO *initFIFO(){
   FIFO *f;
   f = (FIFO*)malloc(sizeof(FIFO));
@@ -263,7 +125,6 @@ void freeFIFO(FIFO *f){
   free(f);
 }
 
-
 QUEUE *initQUEUE(){
   QUEUE *q = (QUEUE *)malloc(sizeof(QUEUE));
   q->c = initFIFO();
@@ -305,7 +166,6 @@ void freeQUEUE(QUEUE *q){
   free(q);
 }
 
-
 FIFO2 *initFIFO2(){
   FIFO2 *f;
   f = (FIFO2*)malloc(sizeof(FIFO2));
@@ -322,6 +182,7 @@ void addFIFO2(FIFO2 *f, Node *N){
   new->t = N->t;
   new->next = N->next;
   new->nhops = N->nhops;
+  new->next_node = NULL;
   if(f->n==0){
     f->last = f->q = new;
   }else{
@@ -355,7 +216,7 @@ void freeFIFO2(FIFO2 *f){
   free(f);
 }
 
-/*
+
 QUEUE2 *initQUEUE2(){
   QUEUE2 *q = (QUEUE2 *)malloc(sizeof(QUEUE2));
   q->c = initFIFO2();
@@ -395,93 +256,163 @@ void freeQUEUE2(QUEUE2 *q){
   freeFIFO2(q->r);
   freeFIFO2(q->p);
   free(q);
-}*/
+}
+void addLIST(LIST *l, int v){
 
-void getNodePathType(Graph *G, int s, char *outfile, int *vetor){
-  QUEUE *q = initQUEUE();
-  //printf("Initiated QUEUE\n");
-  int *T, *Q;
-  int u, v, t, k;
-  link *aux;
-  int i;
-  T = (int *)calloc(G->V,sizeof(int));
-  Q = (int *)calloc(G->V,sizeof(int));
-  s--;
-  T[s] = 3;
-  Q[s] = 1;
+  LISTNODE *new;
+  new = (LISTNODE *)malloc(sizeof(LISTNODE));
+  new->v = v;
+  new->next = NULL;
 
-  addQUEUE(q, s, T[s]);
-  //printf("Added node %d to FIFO\n", s+1);
-  while(!emptyQUEUE(q)){
-    removeQUEUE(q, &u, &t);
-    Q[u] = 0;
-    //printf("Removed node %d type %d from FIFO\n", u+1, t);
-    aux = G->adj[u];
-    while(aux != NULL){
-      v = aux->v;
-        k = modeling(aux->t, T[u]);
-        if(k > T[v]){
-          T[v] = k;
-          //printf("Added node %d to FIFO\n", v+1);
-          if(!Q[v]){
-            addQUEUE(q, v, T[v]);
-            Q[v] = 1;
-          }
-        }
-      aux=aux->next;
-    }
+  if(l->n==0)
+    l->first = l->last=new;
+  else{
+    (l->last)->next = new;
+    l->last=new;
   }
-  FILE *fp;
-  fp = fopen (outfile,"w");
-  if (fp!=NULL)  {
-    for(i = 0; i < G->V; i++) {
-      if(G->adj[i]!=NULL)
-        fprintf(fp, "AS %d - %s\n", i+1, numToType(T[i]));
-    }
-    fclose (fp);
-  }
+  l->n++;
 
-  for(i=0;i<G->V;i++){
-    vetor[i]=T[i];
-  }
-
-  free(T);
-  freeQUEUE(q);
   return;
 }
-/*
-void getNodeHops(Graph *G, int s, char *outfile){
 
-  int *T, *Q, *H;
-  int u, v, t, k;
+LIST *initLIST(){
+
+  LIST *l = (LIST*)malloc(sizeof(LIST));
+  l->n=0;
+  l->first = NULL;
+  l->last = NULL;
+  return l;
+}
+
+void printLIST(LIST *l){
+  LISTNODE *aux;
+  for (aux=l->first; aux!=NULL; aux=aux->next)
+    printf("%d ", aux->v);
+  printf("\n");
+}
+
+void freeLIST(LIST *l){
+  LISTNODE *aux;
+  while(l->first!=NULL){
+    aux = l->first;
+    l->first=l->first->next;
+    free(aux);
+  }
+  free(l);
+}
+
+
+int isGraphComercialConnected(Graph *G){
+
+  LIST *l = initLIST();
   link *aux;
   int i;
+  int noProviders;
+
+  for(i=0; i<G->V; i++){
+    if(G->adj[i]!=NULL){
+      noProviders = 1;
+      for(aux=G->adj[i]; aux!=NULL; aux=aux->next)
+        if(aux->t == 3)
+          noProviders=0;
+      if(noProviders){
+        addLIST(l, i);
+      }
+      noProviders=0;
+    }
+  }
+
+  LISTNODE *x, *y;
+  int allPairs=0;
+  for(x=l->first; x!=NULL; x=x->next){
+    for(y=l->first; y!=NULL; y=y->next){
+      if(y->v!=x->v){
+        for(aux=G->adj[y->v]; aux!=NULL; aux=aux->next){
+          if(aux->t==2 && aux->v==x->v){
+            allPairs++;
+          }
+        }
+      }
+    }
+  }
+  if(allPairs==(l->n-1)*l->n){
+    freeLIST(l);
+    return 1;
+  }
+  freeLIST(l);
+  return 0;
+}
+
+
+int *getNodePathType(Graph *G, int s, int connected, char *outfile, int write){
+
+  QUEUE *q = initQUEUE();
+  int *T, *V;
+  int u, t, k;
+  link *aux;
+  int i;
+
   T = (int *)calloc(G->V,sizeof(int));
-  Q = (int *)calloc(G->V,sizeof(int));
-  H = (int *)calloc(G->V,sizeof(int));
+  if(connected){
+    for(i = 0; i < G->V; i++){
+      T[i]=1;
+    }
+  }
+  V = (int *)calloc(G->V,sizeof(int));
+
   s--;
   T[s] = 3;
-  Q[s] = 1;
   addQUEUE(q, s, T[s]);
 
+  //printf("Added node %d to FIFO\n", s+1);
 
+  while(!emptyQUEUE(q)){
+    removeQUEUE(q, &u, &t);
+    //printf("Removed node %d type %d from FIFO\n", u+1, t);
+    if(!V[u]){
+      aux = G->adj[u];
+      while(aux != NULL){
+        //printf("Checking neighbour %d with type %d.\n", aux->v+1, t);
+        k = modeling(aux->t, T[u]);
+        if(k > T[aux->v]){
+          if(!(connected && k==1)){
+            T[aux->v] = k;
+            //printf("Added node %d to FIFO with type %d.\n", aux->v+1, T[aux->v]);
+            addQUEUE(q, aux->v, T[aux->v]);
+          }
+        }
+        aux=aux->next;
+      }
+      V[u]=1;
+    }
+  }
 
-
-}*/
-
+  if(write){
+    FILE *fp;
+    fp = fopen (outfile,"w");
+    if (fp!=NULL)  {
+      fprintf(fp, "AS destiny = %d\n", s+1);
+      for(i = 0; i < G->V; i++) {
+        if(G->adj[i]!=NULL)
+          fprintf(fp, "AS %d - %s\n", i+1, numToType(T[i]));
+      }
+    }
+    fclose(fp);
+  }
+  free(V);
+  freeQUEUE(q);
+  return T;
+}
 
 void Dijkstra(Graph *Network, Node **path, int destiny_id, int *type){
 	int *verify;
-	Node *a;
-	FIFO2 *f;
+	Node *a=NULL;
+	QUEUE2 *Q;
 	int i;
 	link *aux;
-
-  f = initFIFO2();
+	Q = initQUEUE2();
 
 	verify = (int*)malloc((Network->V)*sizeof(int));
-
-	//printf("estou aqui \n");
 
 	for(i=0;i<(Network->V);i++){
 		verify[i] = 0;
@@ -490,41 +421,50 @@ void Dijkstra(Graph *Network, Node **path, int destiny_id, int *type){
 		path[i]->next = -1;
 	}
 
-	//printf("estou aqui \n");
-
-	destiny_id = destiny_id;
 
 	path[destiny_id - 1]->v = destiny_id;
 	path[destiny_id - 1]->t = 3;
 	path[destiny_id - 1]->nhops = 0;
 	path[destiny_id - 1]->next = destiny_id;
 
-	addFIFO2(f, path[destiny_id - 1]);
+	addQUEUE2(Q, path[destiny_id - 1]);
 
-	for(i=0; !emptyFIFO2(f); i++){
-		//printHeap(H);
-		a = removeFIFO2(f);
-		//printf("iteração %d com o nó %d\n", i, a->v);
+	for(i=0; !emptyQUEUE2(Q); i++){
+
+    //printf("Removing AS\n");
+		a = removeQUEUE2(Q);
+	  //printf("Removed AS %d type %d\n", a->v, a->t);
 		//verify[(a->v)-1] = 1;
-		//printf("retirado o nó %d do Heap\n", a->v);
 		for(aux = Network->adj[(a->v) - 1]; aux != NULL; aux=aux->next){
-      if(modeling(aux->t, a->t) == type[(aux->v)] && verify[aux->v] == 0){
-				//printf("melhorou por tipo\n");
+      //printf("Checking AS %d type %d \n", aux->v+1, aux->t);
+			if(modeling(aux->t, a->t) == type[(aux->v)] && verify[aux->v] == 0){
+			  //printf("Improved\n");
 				path[(aux->v)]->v = aux->v + 1;
 				path[(aux->v)]->next = a->v;
 				path[(aux->v)]->t = modeling(aux->t, a->t);
 				path[(aux->v)]->nhops = a->nhops + 1;
-				addFIFO2(f, path[(aux->v)]);
-        verify[aux->v] = 1;
+        //printf("Adding AS %d type %d\n",path[(aux->v)]->v, path[(aux->v)]->t );
+				addQUEUE2(Q, path[(aux->v)]);
+        //printf("Added\n");
+				verify[aux->v] = 1;
+				countStatistics[(a->nhops) + 1] = countStatistics[(a->nhops) + 1] + 1;
+        Total++;
+				if((a->nhops) + 1 > maxHops){
+					maxHops = (a->nhops) + 1;
+				}
 			}
 		}
+    //printf("Deleting AS %d\n", a->v);
+    free(a);
+    //printf("Deleted.\n\n");
+    //printf("%d\n", emptyQUEUE2(Q));
 	}
 
-  freeFIFO2(f);
+  freeQUEUE2(Q);
   free(verify);
 }
 
-void bestComercialRoute(Graph *Network, int destiny_id, char *outfile, int *vetor){
+void bestComercialRoute(Graph *Network, int destiny_id, char *outfile, int *vetor, int write){
 
 	Node **path;
 	int i;
@@ -537,26 +477,31 @@ void bestComercialRoute(Graph *Network, int destiny_id, char *outfile, int *veto
 
 	Dijkstra(Network, path, destiny_id, vetor);
 
-	FILE *fp;
-  fp = fopen (outfile,"w");
-  if (fp!=NULL)  {
-    for(i=1; i < ((Network->V)+1); i++){
-  	  if((path[i-1]->nhops) == MAX){
-        if(Network->adj[i-1]!=NULL)
-  		    fprintf(fp, "AS %d - Unreachable\n", i);
-  	  }else{
-        if(Network->adj[i-1]!=NULL)
-  		    fprintf(fp, "AS %d - %d hops - %s\n", i, path[i-1]->nhops, numToType(path[i-1]->t));
-          //fprintf(fp, "AS %d - %s\n", i, numToType(path[i-1]->t));
-  	  }
+  if(write){
+  	FILE *fp;
+    fp = fopen (outfile,"w");
+    if (fp!=NULL)  {
+      fprintf(fp, "AS destiny = %d\n", destiny_id+1);
+      for(i=1; i < ((Network->V)+1); i++){
+    	  if((path[i-1]->nhops) == MAX){
+          if(Network->adj[i-1]!=NULL)
+    		    fprintf(fp, "AS %d - Unreachable\n", i);
+    	  }else{
+          if(Network->adj[i-1]!=NULL)
+    		    fprintf(fp, "AS %d - %d hops - %s\n", i, path[i-1]->nhops, numToType(path[i-1]->t));
+          //  fprintf(fp, "AS %d - %s\n", i, numToType(path[i-1]->t));
+    	  }
+      }
     }
+    fclose(fp);
   }
-  fclose(fp);
 
   for (i = 0; i < (Network->V);i++){
     free(path[i]);
   }
   free(path);
+  free(vetor);
+  return;
 }
 
 void BFS(Graph *Network, int *nhops, int destiny){
@@ -573,26 +518,36 @@ void BFS(Graph *Network, int *nhops, int destiny){
 
 	addFIFO(fifo, destiny, 1);
 
-	nhops[destiny-1] = 0;
+	nhops[destiny] = 0;
 
 	for(i=0; fifo->n > 0; i++){
-		//printHeap(H);
+		//printf("Removing AS\n");
 		removeFIFO(fifo, &actualnode, &type);
-		//printf("iteração %d com o nó %d\n", i, a->v);
+		//printf("Removed AS %d\n", actualnode+1);
 		verify[actualnode] = 1;
-		//printf("retirado o nó %d do Heap\n", a->v);
 		for(aux = Network->adj[actualnode];aux != NULL; aux=aux->next){
-			//printf("A relaxar aresta com nó %d\n", aux->v + 1);
+			//printf("Checking AS %d\n", aux->v+1);
 			if(verify[(aux->v)] == 0){
+        //printf("Improved\n");
 				nhops[aux->v] = nhops[actualnode] + 1;
+        //printf("Adding AS %d\n",aux->v+1);
 				addFIFO(fifo, aux->v, 1);
+        //printf("Added\n");
 				verify[(aux->v)] = 1;
+				countStatisticsBFS[nhops[actualnode] + 1] = countStatisticsBFS[nhops[actualnode] + 1] + 1;
+        TotalBFS++;
+				if(nhops[actualnode] + 1 > maxHopsBFS){
+					maxHopsBFS = nhops[actualnode] + 1;
+				}
 			}
 		}
+    //printf("\n");
 	}
+  free(verify);
+  freeFIFO(fifo);
 }
 
-void getSmallPath(Graph *Network, int destiny, char *outfile){
+void getSmallPath(Graph *Network, int destiny, char *outfile, int write){
 
 	int *nhops;
 	int i;
@@ -600,16 +555,19 @@ void getSmallPath(Graph *Network, int destiny, char *outfile){
 
 	BFS(Network, nhops, destiny);
 
-	FILE *fp;
-	fp = fopen (outfile,"w");
-    if (fp!=NULL)  {
-      for(i = 0; i < Network->V; i++) {
-        if(Network->adj[i]!=NULL)
-          fprintf(fp, "Node %d - %d hops\n", i+1, nhops[i]);
-      }
-    fclose (fp);
+  if(write){
+  	FILE *fp;
+  	fp = fopen (outfile,"w");
+      if (fp!=NULL)  {
+        fprintf(fp, "AS destiny = %d\n", destiny+1);
+        for(i = 0; i < Network->V; i++) {
+          if(Network->adj[i]!=NULL)
+            fprintf(fp, "Node %d - %d hops\n", i+1, nhops[i]);
+        }
+      fclose (fp);
+    }
   }
-
+  free(nhops);
 }
 
 void readFile(char *fileName, Graph *G){

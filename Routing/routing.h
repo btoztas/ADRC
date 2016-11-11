@@ -32,7 +32,23 @@ typedef struct _queue2{
 } QUEUE2;
 
 
-void getNodePathType(Graph *G, int s, char *outfile, int *vetor);
+typedef struct _listnode{
+
+  int v;
+  struct _listnode *next;
+
+} LISTNODE;
+
+typedef struct _list{
+
+  int n;
+  LISTNODE *first;
+  LISTNODE *last;
+
+} LIST;
+
+int isGraphComercialConnected(Graph *G);
+int *getNodePathType(Graph *G, int s, int connected, char *outfile, int write);
 
 int modeling(int A, int a);
 
@@ -42,16 +58,8 @@ void removeFIFO(FIFO *f, int *v, int *t);
 int emptyFIFO(FIFO *f);
 void freeFIFO(FIFO *f);
 
-Heap *initHeap(int size);
-void printHeap(Heap *h);
-char *numToType(int n);
-void fixHeapUp(Heap *h);
-void addToHeap(Node *n, Heap *h);
-void fixHeapDown(Heap *h);
-Node *removeFromHeap(Heap * h);
-
-void getSmallPath(Graph *Network, int destiny, char *outfile);
-void bestComercialRoute(Graph *Network, int destiny_id, char *outfile, int *vetor);
+void getSmallPath(Graph *Network, int destiny, char *outfile, int write);
+void bestComercialRoute(Graph *Network, int destiny_id, char *outfile, int *vetor, int write);
 void Dijsktra(Graph *Network, Node **path, int destiny_id, int *type);
 
 void readFile(char *fileName, Graph *G);
