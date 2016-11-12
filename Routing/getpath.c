@@ -221,8 +221,13 @@ int main(int argc, char *argv[]){
       }
       clock_t end = clock();
       double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-      printf("Running time = %lf seconds.\n", time_spent);
-
+      if(time_spent>=60){
+        printf("Running time = %d minutes.\n", (int)time_spent/60);
+      }else if(time_spent<60 && time_spent>1){
+        printf("Running time = %.0lf microseconds.\n", time_spent);
+      }else{
+        printf("Running time = %.0lf microseconds.\n", time_spent*1000);
+      }
     }else if(opt1==5){
       out=1;
     }

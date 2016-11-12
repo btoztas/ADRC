@@ -346,20 +346,24 @@ int isGraphComercialConnected(Graph *G){
 
 int *getNodePathType(Graph *G, int s, int connected, char *outfile, int write){
 
-  QUEUE *q = initQUEUE();
+  QUEUE *q = initQUEUE();  //de notar que a queue tem três FIFOs, sendo que se analiza primeiramente a FIFO dos clientes - peers - providers
   int *T, *V;
   int u, t, k;
   link *aux;
   int i;
 
-  T = (int *)calloc(G->V,sizeof(int));
+  //inicializações
+  //T - vetor com o tipo de caminho
+  T = (int *)calloc(G->V,sizeof(int)); 
   if(connected){
     for(i = 0; i < G->V; i++){
       T[i]=1;
     }
   }
+  // V - vetor de nós visitados
   V = (int *)calloc(G->V,sizeof(int));
 
+  // Adicionar destino
   s--;
   T[s] = 3;
   addQUEUE(q, s, T[s]);
@@ -367,21 +371,21 @@ int *getNodePathType(Graph *G, int s, int connected, char *outfile, int write){
   //printf("Added node %d to FIFO\n", s+1);
 
   while(!emptyQUEUE(q)){
-    removeQUEUE(q, &u, &t);
+    removeQUEUE(q, &u, &t); //Enquanto a fila não estiver vazia
     //printf("Removed node %d type %d from FIFO\n", u+1, t);
-    if(!V[u]){
-      aux = G->adj[u];
-      while(aux != NULL){
+    if(!V[u]){ // Se o nó já nao tiver sido visitado 
+      aux = G->adj[u]; //
+      while(aux != NULL){ //percorrer os seus vizinhos
         //printf("Checking neighbour %d with type %d.\n", aux->v+1, t);
-        k = modeling(aux->t, T[u]);
+        k = modeling(aux->t, T[u]); // modeling implementa a função da tabela c/r/p. isto virifica se o caminho é melhor comercialmente ou não
         if(k > T[aux->v]){
-          if(!(connected && k==1)){
+          if(!(connected && k==1)){  //caso o grafo seja comercialmente conexo, não necessitamos de analisar os providers.
             T[aux->v] = k;
             //printf("Added node %d to FIFO with type %d.\n", aux->v+1, T[aux->v]);
-            addQUEUE(q, aux->v, T[aux->v]);
+            addQUEUE(q, aux->v, T[aux->v]);		// adicionar o vizinho à fila
           }
         }
-        aux=aux->next;
+        aux=aux->next; //proximo vizinho
       }
       V[u]=1;
     }
@@ -403,14 +407,17 @@ int *getNodePathType(Graph *G, int s, int connected, char *outfile, int write){
   freeQUEUE(q);
   return T;
 }
-
+//Na verdade o algoritmo é mais parecido como uam BFS do que com o Dijkstra. No entanto, por todas as horas a bater tecla
+//a implementar um Dijkstra que não foi usado, em memória desse anterior algoritmo, decidimos manter o nome :)
 void Dijkstra(Graph *Network, Node **path, int destiny_id, int *type){
 	int *verify;
 	Node *a=NULL;
 	QUEUE2 *Q;
 	int i;
 	link *aux;
-	Q = initQUEUE2();
+	Q = initQUEUE2();	//de notar que a queue tem três FIFOs, sendo que se analiza primeiramente a FIFO dos clientes - peers - providers
+
+	//inicializações
 
 	verify = (int*)malloc((Network->V)*sizeof(int));
 
@@ -421,23 +428,25 @@ void Dijkstra(Graph *Network, Node **path, int destiny_id, int *type){
 		path[i]->next = -1;
 	}
 
-
+	//inicializar o nó destino de maneira a colocalo na queue
 	path[destiny_id - 1]->v = destiny_id;
 	path[destiny_id - 1]->t = 3;
 	path[destiny_id - 1]->nhops = 0;
 	path[destiny_id - 1]->next = destiny_id;
 
+	//adiciona-lo à queue
 	addQUEUE2(Q, path[destiny_id - 1]);
 
-	for(i=0; !emptyQUEUE2(Q); i++){
+	for(i=0; !emptyQUEUE2(Q); i++){  //enquanto a queue nao estiver vazia
 
     //printf("Removing AS\n");
-		a = removeQUEUE2(Q);
+		a = removeQUEUE2(Q);    //analizar o no que reteramos da mesma
 	  //printf("Removed AS %d type %d\n", a->v, a->t);
 		//verify[(a->v)-1] = 1;
-		for(aux = Network->adj[(a->v) - 1]; aux != NULL; aux=aux->next){
+		for(aux = Network->adj[(a->v) - 1]; aux != NULL; aux=aux->next){ // percorrer os vizinhos
       //printf("Checking AS %d type %d \n", aux->v+1, aux->t);
-			if(modeling(aux->t, a->t) == type[(aux->v)] && verify[aux->v] == 0){
+			if(modeling(aux->t, a->t) == type[(aux->v)] && verify[aux->v] == 0){  //verificar se o tipo de caminho eleito é o mesmo que já foi eleito anteriormente
+																				  //verificar se o no já nao foi visitado
 			  //printf("Improved\n");
 				path[(aux->v)]->v = aux->v + 1;
 				path[(aux->v)]->next = a->v;
@@ -445,10 +454,11 @@ void Dijkstra(Graph *Network, Node **path, int destiny_id, int *type){
 				path[(aux->v)]->nhops = a->nhops + 1;
         //printf("Adding AS %d type %d\n",path[(aux->v)]->v, path[(aux->v)]->t );
 				addQUEUE2(Q, path[(aux->v)]);
+																				//adicionar o novo nó descoberto, à queue
         //printf("Added\n");
-				verify[aux->v] = 1;
+				verify[aux->v] = 1;												//colorir o nó
 				countStatistics[(a->nhops) + 1] = countStatistics[(a->nhops) + 1] + 1;
-        Total++;
+        		Total++;
 				if((a->nhops) + 1 > maxHops){
 					maxHops = (a->nhops) + 1;
 				}
