@@ -17,6 +17,11 @@ void errorFile(){
   exit(-1);
 }
 
+void errorReading(){
+  printf("Error reading or wrong input.\n");
+  exit(-1);
+}
+
 void readFile(char *fileName, Graph *G){
   FILE *fp;
   Edge *e;
@@ -37,7 +42,9 @@ void readFile(char *fileName, Graph *G){
 
 
 int main(int argc, char *argv[]){
-
+  int leave = 0;
+  int s, t;
+  int opt;
   if (argc != 2) {
     printf("Usage: getpath <infile>.\n");
     exit(-1);
@@ -48,9 +55,29 @@ int main(int argc, char *argv[]){
   readFile(argv[1], G);
   printf("Show Graph\n");
   GRAPHshow(G);
-
-  printf("%d\n",EdKarp(G, 0, 9));
-
+  while(!leave){
+    printf("What do you want to do?\n1. Select two nodes\n2. All node to all nodes\n3. Exit\nOption: ");
+    if(scanf("%d", &opt)!=1)
+      errorReading();
+    if(opt==1){
+      printf("Source: ");
+      scanf("%d", &s);
+      printf("Destiny: ");
+      scanf("%d", &t);
+      printf("Result: %d\n",EdKarp(G, s--, t--));
+    }
+    else if(opt==2){
+      printf("Option under construction... Sorry for the delay.\n");
+    }
+    else if(opt==3){
+      printf("Goodbye!\n");
+      leave = 1;
+    }
+    else{
+      printf("Select a valid option.\n");
+    }
+    printf("\n\n\n");
+  }
   GRAPHfree(G, MAX);
   exit(1);
 }

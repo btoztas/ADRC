@@ -23,6 +23,7 @@ int EdKarp(Graph *G, int s, int d){
 		ResG->adj[p[pre]][pre] = 0;
 		maxFlow++;
 		pre=s;
+		GRAPHshow(ResG);
 	}
 	free(p);
   return maxFlow;
