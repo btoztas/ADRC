@@ -14,3 +14,4 @@ void addFIFO(FIFO *f, int v);
 void removeFIFO(FIFO *f, int *v);
 int emptyFIFO(FIFO *f);
 void freeFIFO(FIFO *f);
+int BFS(Graph *G, int *path, int source, int destiny);

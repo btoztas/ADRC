@@ -12,4 +12,4 @@ typedef struct _Graph{
 Graph *GRAPHinit(int);
 void GRAPHinsertE(Graph *, Edge *);
 void GRAPHshow(Graph*);
-void GRAPHfree(Graph*);
+void GRAPHfree(Graph*, int V);

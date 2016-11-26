@@ -63,9 +63,9 @@ int BFS(Graph *G, int *path, int source, int destiny){
 	int i;
   int found=0;
 
-	path = (int*)malloc((G->V)*sizeof(int));
   for(i=0; i<G->V; i++)
     path[i]=-1;
+
   path[destiny]=destiny;
 
 	addFIFO(fifo, destiny);

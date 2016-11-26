@@ -8,8 +8,9 @@ Graph *GRAPHinit(int V) {
 	printf("FSDAFSADSADF\n");
 	G -> V = 0;
 	G -> E = 0;
-	G -> adj = (int **)calloc(V*V,sizeof(int));
-
+	G -> adj = (int **)calloc(V,sizeof(int*));
+	for (int i = 0; i < V; i++)
+		G -> adj[i] =(int *)calloc(V,sizeof(int));
 	return G;
 }
 
@@ -34,13 +35,15 @@ void GRAPHshow(Graph *G) {
 		printf("%2d:", v+1);
 		for (t=0; t < G -> V; t++)
 			if(G -> adj[v][t])
-			printf(" (%d)", t);
+			printf(" (%d)", t+1);
 		printf("\n");
 	}
 }
 
-void GRAPHfree(Graph *G){
+void GRAPHfree(Graph *G, int V){
 
+	for (int i = 0; i < V; i++)
+		free(G->adj[i]);
 	free(G->adj);
 	free(G);
 	return;
