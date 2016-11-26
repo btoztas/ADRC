@@ -15,14 +15,7 @@ extern int maxHopsBFS;
 extern long int countStatisticsBFS[100];
 extern long int TotalBFS;
 
-void errorMalloc(){
-  printf("Error allocating memory.\n");
-  exit(-1);
-}
-void errorFile(){
-  printf("Error opening file.\n");
-  exit(-1);
-}
+
 
 int modeling(int A, int a){
 	switch(A) {
@@ -354,7 +347,7 @@ int *getNodePathType(Graph *G, int s, int connected, char *outfile, int write){
 
   //inicializações
   //T - vetor com o tipo de caminho
-  T = (int *)calloc(G->V,sizeof(int)); 
+  T = (int *)calloc(G->V,sizeof(int));
   if(connected){
     for(i = 0; i < G->V; i++){
       T[i]=1;
@@ -373,7 +366,7 @@ int *getNodePathType(Graph *G, int s, int connected, char *outfile, int write){
   while(!emptyQUEUE(q)){
     removeQUEUE(q, &u, &t); //Enquanto a fila não estiver vazia
     //printf("Removed node %d type %d from FIFO\n", u+1, t);
-    if(!V[u]){ // Se o nó já nao tiver sido visitado 
+    if(!V[u]){ // Se o nó já nao tiver sido visitado
       aux = G->adj[u]; //
       while(aux != NULL){ //percorrer os seus vizinhos
         //printf("Checking neighbour %d with type %d.\n", aux->v+1, t);
