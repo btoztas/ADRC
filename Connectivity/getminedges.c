@@ -48,14 +48,9 @@ int main(int argc, char *argv[]){
   readFile(argv[1], G);
   printf("Show Graph\n");
   GRAPHshow(G);
-  int *path = (int*)malloc(G->V*sizeof(int));
 
-  BFS(G, path, 0, 9);
-  for (int i = 0; i < G->V; i++) {
-    printf("%d\n", path[i]+1);
-  }
+  printf("%d\n",EdKarp(G, 0, 9));
 
-  free(path);
   GRAPHfree(G, MAX);
   exit(1);
 }

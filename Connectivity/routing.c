@@ -73,7 +73,7 @@ int BFS(Graph *G, int *path, int source, int destiny){
 		//printf("Removing AS\n");
 		removeFIFO(fifo, &actualnode);
 		//printf("Removed AS %d\n", actualnode+1);
-		for(i = 0; i<G->V; i++){
+		for(i = 0; i<G->V && !found; i++){
       if(G->adj[actualnode][i]){
         //printf("Checking AS %d\n", aux->v+1);
   			if(path[i] == -1){
