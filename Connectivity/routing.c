@@ -65,22 +65,24 @@ int BFS(Graph *G, int *path, int source, int destiny){
 
   for(i=0; i<G->V; i++)
     path[i]=-1;
-
   path[destiny]=destiny;
 
 	addFIFO(fifo, destiny);
   while(fifo->n > 0 && !found){
 		//printf("Removing AS\n");
 		removeFIFO(fifo, &actualnode);
-		//printf("Removed AS %d\n", actualnode+1);
+		//printf("Removed node %d\n", actualnode+1);
 		for(i = 0; i<G->V && !found; i++){
       if(G->adj[actualnode][i]){
+        //printf("found edge with %d\n", i+1);
         //printf("Checking AS %d\n", aux->v+1);
   			if(path[i] == -1){
-          path[i]=actualnode;
-          if(i == source)
+          //printf("(%d,%d)\n", i+1, actualnode+1);
+          path[i] = actualnode;
+          if(i == source){
             found = 1;
-          else
+            //printf("its the source!!!\n");
+          }else
   				  addFIFO(fifo, i);
         }
       }

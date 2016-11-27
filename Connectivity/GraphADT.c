@@ -5,7 +5,6 @@
 Graph *GRAPHinit(int V) {
 
 	Graph	*G = (Graph*)malloc(sizeof(Graph));
-	printf("FSDAFSADSADF\n");
 	G -> V = 0;
 	G -> E = 0;
 	G -> adj = (int **)calloc(V,sizeof(int*));
